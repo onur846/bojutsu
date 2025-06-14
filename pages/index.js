@@ -48,12 +48,12 @@ export default function Home() {
           <div 
             className="mt-3 bg-[#1c2230cc] rounded-xl shadow-lg border border-[#292d3e] flex items-center justify-center p-3"
             style={{
-              width: "15cm",
-              height: "1.5cm",
-              minWidth: "15cm",
-              minHeight: "1.5cm",
-              maxWidth: "15cm",
-              maxHeight: "1.5cm"
+              width: "7.5cm",
+              height: "2cm",
+              minWidth: "7.5cm",
+              minHeight: "2cm",
+              maxWidth: "7.5cm",
+              maxHeight: "2cm"
             }}
           >
             <div className="w-full h-full flex flex-col justify-center">
