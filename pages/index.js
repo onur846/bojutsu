@@ -43,7 +43,7 @@ export default function Home() {
           </table>
         </div>
         <div className="text-center text-gray-400 mt-8">
-          <span>🚀 Powered by Katana Testnet (Mock Data) — Add your API key for live data!</span>
+          <span>🚀 Powered by Katana Testnet</span>
         </div>
       </div>
     </div>
