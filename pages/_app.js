@@ -1,4 +1,4 @@
-import '@/styles/globals.css'
+import '../styles/globals.css'
 import { WagmiProvider } from 'wagmi'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { config, queryClient } from '../lib/wagmi' // adjust path if needed
