@@ -3,12 +3,16 @@ import WalletConnectButton from "../components/WalletConnectButton";
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#0d101a] flex flex-col">
-      {/* Header Bar */}
-      <div className="flex items-center justify-between px-10 pt-10 pb-4">
-        <h1 className="text-4xl font-bold text-white">
+      {/* Header bar with centered title and button top right */}
+      <div className="relative w-full pt-10 pb-4">
+        {/* Centered header */}
+        <h1 className="absolute left-1/2 top-0 -translate-x-1/2 text-4xl font-bold text-white">
           Katana Vault Aggregator
         </h1>
-        <WalletConnectButton />
+        {/* Top right button */}
+        <div className="absolute right-10 top-0">
+          <WalletConnectButton />
+        </div>
       </div>
 
       {/* Main Content */}
@@ -42,7 +46,7 @@ export default function Home() {
       </div>
 
       <footer className="text-center mt-12 text-gray-400">
-        Powered by Onur - X : @pelenko
+        Powered by @pelenko
       </footer>
     </div>
   );
