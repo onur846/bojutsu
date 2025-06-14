@@ -46,9 +46,9 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Quickstart Section - right aligned */}
-      <div className="flex w-full max-w-7xl px-4 mb-8">
-        <div className="ml-auto w-full max-w-sm">
+      {/* Quickstart Section - fixed to the right, under header */}
+      <div className="w-full max-w-7xl px-4 flex justify-end" style={{ marginTop: '-60px', marginBottom: '30px' }}>
+        <div className="max-w-md w-full">
           <div className="bg-[#1c2230cc] rounded-xl p-5 shadow-lg flex flex-col border border-[#292d3e]">
             <div>
               <div className="text-white font-semibold text-lg mb-1">🧪 Testnet Quickstart</div>
