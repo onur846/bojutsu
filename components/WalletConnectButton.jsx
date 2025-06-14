@@ -1,29 +1,26 @@
-import React from "react";
-import { useAccount, useDisconnect, useConnect } from "wagmi";
-import { InjectedConnector } from "@wagmi/connectors/injected";
-import { LogIn, LogOut } from "lucide-react";
+import { useConnect, useAccount, useDisconnect } from 'wagmi'
+import { LogIn, LogOut } from 'lucide-react'
 
-const WalletConnectButton = () => {
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { connect, isLoading } = useConnect({
-    connector: new InjectedConnector(),
-  });
+export default function WalletConnectButton() {
+  const { address, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+  const { connect, connectors, isPending } = useConnect()
 
   const shortAddr = (addr) =>
-    addr ? addr.slice(0, 6) + "..." + addr.slice(-4) : "";
+    addr ? addr.slice(0, 6) + "..." + addr.slice(-4) : ""
 
   if (!isConnected) {
+    // use the first available connector
     return (
       <button
-        onClick={() => connect()}
+        onClick={() => connect({ connector: connectors[0] })}
         className="px-5 py-2 rounded-full bg-black text-white hover:bg-gray-900 transition flex items-center gap-2 shadow-lg"
         style={{ fontWeight: "bold", fontSize: "1rem" }}
       >
         <LogIn size={18} />
-        {isLoading ? "Connecting..." : "Connect Wallet"}
+        {isPending ? "Connecting..." : "Connect Wallet"}
       </button>
-    );
+    )
   }
 
   return (
@@ -40,7 +37,5 @@ const WalletConnectButton = () => {
         <LogOut size={16} />
       </button>
     </div>
-  );
-};
-
-export default WalletConnectButton;
+  )
+}
