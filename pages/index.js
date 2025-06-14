@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchVaultsTVL } from "../lib/vaults";
+import WalletConnectButton from "../components/WalletConnectButton";
 
 export default function Home() {
   const [vaults, setVaults] = useState([]);
@@ -15,7 +16,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-950 text-white px-4 py-10">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-10 text-center">Katana Vault Aggregator</h1>
+        <h1 className="text-4xl font-bold mb-10 text-center">
+          Katana Vault Aggregator
+        </h1>
+        <div className="flex justify-center mb-8">
+          <WalletConnectButton />
+        </div>
         <div className="bg-gray-900 rounded-2xl shadow-xl p-8">
           <table className="w-full table-auto">
             <thead>
@@ -28,7 +34,11 @@ export default function Home() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={4} className="py-8 text-center text-gray-500">Loading...</td></tr>
+                <tr>
+                  <td colSpan={4} className="py-8 text-center text-gray-500">
+                    Loading...
+                  </td>
+                </tr>
               ) : (
                 vaults.map(v => (
                   <tr key={v.address} className="border-b border-gray-800 hover:bg-gray-800 transition">
@@ -43,7 +53,9 @@ export default function Home() {
           </table>
         </div>
         <div className="text-center text-gray-400 mt-8">
-          <span>🚀 Powered by Katana Testnet</span>
+          <span>
+             Powered by @pelenko
+          </span>
         </div>
       </div>
     </div>
