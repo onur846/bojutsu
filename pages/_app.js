@@ -6,7 +6,7 @@ import {
   mainnet, arbitrum, polygon, optimism, base, bsc,
   avalanche, fantom, zora, gnosis, linea, scroll, mantle
 } from 'wagmi/chains'
-import { InjectedConnector } from 'wagmi/connectors/injected'
+import { InjectedConnector } from 'wagmi/connectors'
 
 const queryClient = new QueryClient()
 
