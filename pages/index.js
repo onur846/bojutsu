@@ -38,13 +38,13 @@ export default function Home() {
         backgroundAttachment: "fixed"
       }}
     >
-      {/* Header bar + Connect Wallet + Quickstart */}
+      {/* Header bar */}
       <div className="relative w-full pt-14 pb-10 flex items-center justify-center">
         <h1 className="text-4xl font-bold text-white text-center w-full">Katana Vault Aggregator</h1>
         {/* Connect Wallet Button */}
-        <div className="absolute right-10 top-1/2 -translate-y-1/2">
+        <div className="absolute right-10 top-0">
           <WalletConnectButton />
-          {/* Testnet Quickstart Card */}
+          {/* Testnet Quickstart Card just under button */}
           <div
             style={{
               width: "16cm",
@@ -53,7 +53,7 @@ export default function Home() {
               minHeight: "1.5cm",
               maxWidth: "16cm",
               maxHeight: "1.5cm",
-              marginTop: "1.2rem" // a bit of space below the button, adjust if needed
+              marginTop: "0.6cm"
             }}
             className="flex items-center"
           >
