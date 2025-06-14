@@ -46,13 +46,23 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Quickstart Section - fixed to the right, under header */}
-      <div className="w-full max-w-7xl px-4 flex justify-end" style={{ marginTop: '-60px', marginBottom: '30px' }}>
-        <div className="max-w-md w-full">
-          <div className="bg-[#1c2230cc] rounded-xl p-5 shadow-lg flex flex-col border border-[#292d3e]">
+      {/* Quickstart Section - precise size and placement */}
+      <div className="w-full max-w-7xl px-4 flex justify-end" style={{ marginBottom: "0.5cm" }}>
+        <div
+          style={{
+            width: "16cm",
+            height: "1.5cm",
+            minWidth: "16cm",
+            minHeight: "1.5cm",
+            maxWidth: "16cm",
+            maxHeight: "1.5cm"
+          }}
+          className="flex items-center"
+        >
+          <div className="bg-[#1c2230cc] rounded-xl shadow-lg flex flex-col justify-center border border-[#292d3e] w-full h-full p-3">
             <div>
-              <div className="text-white font-semibold text-lg mb-1">🧪 Testnet Quickstart</div>
-              <div className="flex flex-wrap gap-3 text-sm mb-1">
+              <div className="text-white font-semibold text-lg mb-0 leading-tight">🧪 Testnet Quickstart</div>
+              <div className="flex flex-wrap gap-3 text-sm mb-0 mt-0.5">
                 <a href={KATANA_CHAIN.faucet} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Get Test ETH (Faucet)</a>
                 <a href={KATANA_CHAIN.bridge} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Bridge Test Assets</a>
                 <a
