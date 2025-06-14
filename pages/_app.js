@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import WalletConnectButton from "@/components/WalletConnectButton";
 
 export default function App({ Component, pageProps }) {
