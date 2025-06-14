@@ -23,7 +23,6 @@ const VAULTS = [
 const KATANA_CHAIN = {
   name: "Tatara Network (Katana Testnet)",
   chainId: 129399,
-  rpc: "https://rpc.tatara.katanarpc.com/<your_api_key>",
   explorer: "https://explorer.tatara.katana.network/",
   faucet: "https://faucet-api.polygon.technology/api-docs/",
   bridge: "https://portal-staging.polygon.technology/bridge",
