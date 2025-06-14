@@ -1,63 +1,49 @@
-import { useEffect, useState } from "react";
-import { fetchVaultsTVL } from "../lib/vaults";
 import WalletConnectButton from "../components/WalletConnectButton";
 
 export default function Home() {
-  const [vaults, setVaults] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchVaultsTVL().then(data => {
-      setVaults(data);
-      setLoading(false);
-    });
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gray-950 text-white px-4 py-10">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-10 text-center">
+    <div className="min-h-screen bg-[#0d101a] flex flex-col">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between px-10 pt-10 pb-4">
+        <h1 className="text-4xl font-bold text-white">
           Katana Vault Aggregator
         </h1>
-        <div className="flex justify-center mb-8">
-          <WalletConnectButton />
-        </div>
-        <div className="bg-gray-900 rounded-2xl shadow-xl p-8">
-          <table className="w-full table-auto">
+        <WalletConnectButton />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex flex-1 justify-center items-start mt-6">
+        <div className="bg-[#181c26] rounded-2xl p-10 shadow-lg min-w-[600px]">
+          <table className="w-full text-left text-white">
             <thead>
               <tr className="border-b border-gray-700">
-                <th className="py-2 text-left">Vault</th>
-                <th className="py-2 text-left">Underlying</th>
-                <th className="py-2 text-left">APY</th>
-                <th className="py-2 text-left">TVL</th>
+                <th className="pb-2">Vault</th>
+                <th className="pb-2">Underlying</th>
+                <th className="pb-2">APY</th>
+                <th className="pb-2">TVL</th>
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={4} className="py-8 text-center text-gray-500">
-                    Loading...
-                  </td>
-                </tr>
-              ) : (
-                vaults.map(v => (
-                  <tr key={v.address} className="border-b border-gray-800 hover:bg-gray-800 transition">
-                    <td className="py-3 font-medium">{v.name}</td>
-                    <td>{v.underlying}</td>
-                    <td>{(v.apy * 100).toFixed(2)}%</td>
-                    <td>{v.tvl.toLocaleString()} {v.underlying}</td>
-                  </tr>
-                ))
-              )}
+              <tr className="border-b border-gray-800">
+                <td className="py-2">yvWETH</td>
+                <td>WETH</td>
+                <td>13.00%</td>
+                <td>1,234.56 WETH</td>
+              </tr>
+              <tr>
+                <td className="py-2">yvAUSD</td>
+                <td>AUSD</td>
+                <td>8.90%</td>
+                <td>9,876.54 AUSD</td>
+              </tr>
             </tbody>
           </table>
         </div>
-        <div className="text-center text-gray-400 mt-8">
-          <span>
-             Powered by @pelenko
-          </span>
-        </div>
       </div>
+
+      <footer className="text-center mt-12 text-gray-400">
+        Powered by Onur - X : @pelenko
+      </footer>
     </div>
   );
 }
