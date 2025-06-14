@@ -6,7 +6,7 @@ import {
   mainnet, arbitrum, polygon, optimism, base, bsc,
   avalanche, fantom, zora, gnosis, linea, scroll, mantle
 } from 'wagmi/chains'
-import { InjectedConnector } from 'wagmi/connectors'
+import { injected } from 'wagmi/connectors'
 
 const queryClient = new QueryClient()
 
@@ -17,7 +17,7 @@ const chains = [
 
 const wagmiConfig = createConfig({
   chains,
-  connectors: [new InjectedConnector({ chains })],
+  connectors: [injected()],
   transports: Object.fromEntries(
     chains.map((chain) => [chain.id, http()])
   )
