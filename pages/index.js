@@ -2,21 +2,30 @@ import WalletConnectButton from "../components/WalletConnectButton";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0d101a] flex flex-col">
-      {/* Header bar with centered title and button top right */}
-      <div className="relative w-full pt-16 pb-10"> {/* increased pt and pb */}
-        {/* Centered header */}
-        <h1 className="absolute left-1/2 top-6 -translate-x-1/2 text-4xl font-bold text-white">
+    <div
+      className="min-h-screen flex flex-col relative"
+      style={{
+        backgroundImage: "url('/bojutsu-bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Overlay for readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-60 z-0"></div>
+
+      {/* Header and wallet button */}
+      <div className="relative z-10 w-full flex justify-center items-center pt-24 pb-10">
+        <h1 className="text-4xl font-bold text-white flex-1 text-center">
           Katana Vault Aggregator
         </h1>
-        {/* Top right button */}
-        <div className="absolute right-10 top-6">
+        <div className="absolute right-10">
           <WalletConnectButton />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 justify-center items-start mt-16"> {/* increased mt */}
+      <div className="relative z-10 flex flex-1 justify-center items-start mt-16">
         <div className="bg-[#181c26] rounded-2xl p-10 shadow-lg min-w-[600px]">
           <table className="w-full text-left text-white">
             <thead>
@@ -45,8 +54,9 @@ export default function Home() {
         </div>
       </div>
 
-      <footer className="text-center mt-12 mb-8 text-gray-400">
-        Powered by Onur  X : @pelenko
+      {/* Footer */}
+      <footer className="relative z-10 text-center mt-16 mb-10 text-gray-400">
+        Powered by Onur X : @pelenko
       </footer>
     </div>
   );
