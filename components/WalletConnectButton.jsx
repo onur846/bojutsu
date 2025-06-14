@@ -1,6 +1,6 @@
 import React from "react";
 import { useAccount, useDisconnect, useConnect } from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
+import { InjectedConnector } from "@wagmi/connectors/injected";
 import { LogIn, LogOut } from "lucide-react";
 
 const WalletConnectButton = () => {
