@@ -32,8 +32,10 @@ export default function Home() {
       className="min-h-screen bg-[#0d101a] flex flex-col"
       style={{
         backgroundImage: "url('/bojutsu-bg.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center"
+        backgroundSize: "100vw 100vh",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed"
       }}
     >
       {/* Header bar */}
