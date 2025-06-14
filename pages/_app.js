@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 
-import { WagmiProvider, createConfig, http } from 'wagmi'
+import { WagmiConfig, createConfig, http } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   mainnet, arbitrum, polygon, optimism, base, bsc,
@@ -25,7 +25,7 @@ const wagmiConfig = createConfig({
 
 export default function App({ Component, pageProps }) {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiConfig config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
       </QueryClientProvider>
