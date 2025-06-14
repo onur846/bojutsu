@@ -13,6 +13,7 @@ const VAULTS = Array.from({ length: 50 }, (_, i) => ({
 const KATANA_CHAIN = {
   name: "Tatara Network (Katana Testnet)",
   chainId: 129399,
+  rpc: "https://rpc.tatara.katanarpc.com/demo",
   explorer: "https://explorer.tatara.katana.network/",
   faucet: "https://faucet-api.polygon.technology/api-docs/",
   bridge: "https://portal-staging.polygon.technology/bridge",
@@ -51,7 +52,9 @@ export default function Home() {
             <div className="flex flex-wrap gap-3 text-sm mb-1">
               <a href={KATANA_CHAIN.faucet} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Get Test ETH (Faucet)</a>
               <a href={KATANA_CHAIN.bridge} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Bridge Test Assets</a>
-              <a href="#" className="text-blue-300 hover:underline"
+              <a
+                href="#"
+                className="text-blue-300 hover:underline"
                 onClick={() => {
                   if (window.ethereum) {
                     window.ethereum.request({
@@ -60,12 +63,15 @@ export default function Home() {
                         chainId: "0x1f971", // 129399 decimal = 0x1f971
                         chainName: KATANA_CHAIN.name,
                         nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-                        rpcUrls: [],
+                        rpcUrls: [KATANA_CHAIN.rpc],
                         blockExplorerUrls: [KATANA_CHAIN.explorer],
                       }]
+                    }).catch((err) => {
+                      // Optionally, handle user rejection or errors here
                     });
                   }
-                }}>
+                }}
+              >
                 Add Katana Testnet to MetaMask
               </a>
             </div>
