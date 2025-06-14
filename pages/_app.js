@@ -1,3 +1,4 @@
+import '../styles/globals.css'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
@@ -7,6 +8,9 @@ import {
 import { injected, walletConnect } from 'wagmi/connectors' 
 
 const chains = [mainnet, arbitrum, polygon, optimism, base, bsc, avalanche, fantom, zora, gnosis, linea, scroll, mantle];
+
+// You forgot this line:
+const queryClient = new QueryClient();
 
 const wagmiConfig = createConfig({
   chains,
@@ -23,10 +27,10 @@ const wagmiConfig = createConfig({
 
 export default function App({ Component, pageProps }) {
   return (
-    <WagmiConfig config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Component {...pageProps} />
       </QueryClientProvider>
-    </WagmiConfig>
+    </WagmiProvider>
   )
 }
