@@ -1,4 +1,3 @@
-// components/WalletConnectButton.jsx
 import React from "react";
 import { useAccount, useDisconnect, useConnect } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
@@ -11,7 +10,6 @@ const WalletConnectButton = () => {
     connector: new InjectedConnector(),
   });
 
-  // Shorten address: 0x1234...abcd
   const shortAddr = (addr) =>
     addr ? addr.slice(0, 6) + "..." + addr.slice(-4) : "";
 
