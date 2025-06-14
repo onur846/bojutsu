@@ -1,23 +1,21 @@
-import '../styles/globals.css'
-
-import { WagmiConfig, createConfig, http } from 'wagmi'
+import { WagmiProvider, createConfig, http } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   mainnet, arbitrum, polygon, optimism, base, bsc,
   avalanche, fantom, zora, gnosis, linea, scroll, mantle
 } from 'wagmi/chains'
-import { injected } from 'wagmi/connectors'
+import { injected, walletConnect } from 'wagmi/connectors' 
 
-const queryClient = new QueryClient()
-
-const chains = [
-  mainnet, arbitrum, polygon, optimism, base, bsc,
-  avalanche, fantom, zora, gnosis, linea, scroll, mantle
-]
+const chains = [mainnet, arbitrum, polygon, optimism, base, bsc, avalanche, fantom, zora, gnosis, linea, scroll, mantle];
 
 const wagmiConfig = createConfig({
   chains,
-  connectors: [injected()],
+  connectors: [
+    injected(),
+    walletConnect({
+      projectId: '39681bbf49eacfab90129b7821dc5a52',
+    }),
+  ],
   transports: Object.fromEntries(
     chains.map((chain) => [chain.id, http()])
   )
