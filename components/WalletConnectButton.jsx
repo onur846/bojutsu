@@ -1,86 +1,48 @@
-import { useAccount, useDisconnect } from 'wagmi';
-import { useEnsAvatar } from 'wagmi';
-import { Copy, ChevronDown, LogOut } from 'lucide-react';
-import { useState } from 'react';
+// components/WalletConnectButton.jsx
+import React from "react";
+import { useAccount, useDisconnect, useConnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { LogIn, LogOut } from "lucide-react";
 
-export function WalletConnectButton() {
+const WalletConnectButton = () => {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
-  const [dropdown, setDropdown] = useState(false);
+  const { connect, isLoading } = useConnect({
+    connector: new InjectedConnector(),
+  });
 
-  // For ENS avatar (shows blockie as fallback)
-  const { data: ensAvatar } = useEnsAvatar({ address });
-  const shortAddress = address
-    ? address.slice(0, 4) + '..' + address.slice(-2)
-    : '';
-
-  // Copy address to clipboard
-  const handleCopy = () => {
-    navigator.clipboard.writeText(address);
-  };
+  // Shorten address: 0x1234...abcd
+  const shortAddr = (addr) =>
+    addr ? addr.slice(0, 6) + "..." + addr.slice(-4) : "";
 
   if (!isConnected) {
-    // Not connected: show connect button
     return (
       <button
-        className="bg-yellow-500 text-blue-900 font-bold rounded-xl px-6 py-2 hover:bg-yellow-400 transition"
-        onClick={() => window.ethereum?.request({ method: 'eth_requestAccounts' })}
+        onClick={() => connect()}
+        className="px-5 py-2 rounded-full bg-black text-white hover:bg-gray-900 transition flex items-center gap-2 shadow-lg"
+        style={{ fontWeight: "bold", fontSize: "1rem" }}
       >
-        Connect Wallet
+        <LogIn size={18} />
+        {isLoading ? "Connecting..." : "Connect Wallet"}
       </button>
     );
   }
 
-  // Connected view:
   return (
-    <div className="relative flex flex-col items-end">
+    <div className="flex items-center gap-2">
+      <span className="px-3 py-1 rounded-full bg-gray-200 text-gray-900 font-mono" style={{ fontWeight: 600 }}>
+        {shortAddr(address)}
+      </span>
       <button
-        className="flex items-center gap-2 bg-[#12153a] border border-yellow-400 rounded-xl px-4 py-2 shadow cursor-pointer"
-        onClick={() => setDropdown(!dropdown)}
+        onClick={() => disconnect()}
+        className="px-3 py-1 rounded-full bg-gray-800 text-white hover:bg-red-600 transition flex items-center gap-1"
+        style={{ fontWeight: "bold" }}
+        title="Disconnect"
       >
-        {/* ENS Avatar or Blockie */}
-        <img
-          src={
-            ensAvatar ||
-            `https://api.dicebear.com/7.x/identicon/svg?seed=${address}`
-          }
-          alt="avatar"
-          className="w-8 h-8 rounded-full bg-gray-800"
-        />
-        <span className="text-white font-mono">{shortAddress}</span>
-        <Copy
-          size={16}
-          className="text-blue-400 hover:text-yellow-400"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleCopy();
-          }}
-        />
-        <ChevronDown
-          size={18}
-          className={`ml-1 transition-transform ${dropdown ? 'rotate-180' : ''}`}
-        />
+        <LogOut size={16} />
       </button>
-      {/* Dropdown */}
-      {dropdown && (
-        <div className="absolute top-14 right-0 min-w-[180px] bg-[#1a1d42] border border-yellow-300 rounded-xl shadow-lg z-50 flex flex-col">
-          <button
-            className="flex items-center gap-2 px-4 py-2 text-left hover:bg-[#232653] text-white rounded-t-xl"
-            onClick={() => {
-              handleCopy();
-              setDropdown(false);
-            }}
-          >
-            <Copy size={16} /> Copy Address
-          </button>
-          <button
-            className="flex items-center gap-2 px-4 py-2 text-left hover:bg-[#232653] text-yellow-400 font-bold rounded-b-xl"
-            onClick={() => disconnect()}
-          >
-            <LogOut size={16} /> Disconnect
-          </button>
-        </div>
-      )}
     </div>
   );
-}
+};
+
+export default WalletConnectButton;
