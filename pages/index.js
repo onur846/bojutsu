@@ -4,19 +4,19 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0d101a] flex flex-col">
       {/* Header bar with centered title and button top right */}
-      <div className="relative w-full pt-17 pb-17">
+      <div className="relative w-full pt-16 pb-10"> {/* increased pt and pb */}
         {/* Centered header */}
-        <h1 className="absolute left-1/2 top-2 -translate-x-1/2 text-4xl font-bold text-white">
+        <h1 className="absolute left-1/2 top-6 -translate-x-1/2 text-4xl font-bold text-white">
           Katana Vault Aggregator
         </h1>
         {/* Top right button */}
-        <div className="absolute right-10 top-2">
+        <div className="absolute right-10 top-6">
           <WalletConnectButton />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1 justify-center items-start mt-6">
+      <div className="flex flex-1 justify-center items-start mt-16"> {/* increased mt */}
         <div className="bg-[#181c26] rounded-2xl p-10 shadow-lg min-w-[600px]">
           <table className="w-full text-left text-white">
             <thead>
@@ -46,7 +46,7 @@ export default function Home() {
       </div>
 
       <footer className="text-center mt-12 mb-8 text-gray-400">
-        Powered by @pelenko
+        Powered by Onur  X : @pelenko
       </footer>
     </div>
   );
