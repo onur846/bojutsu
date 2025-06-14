@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0d101a] flex flex-col">
       {/* Header bar with centered title and button top right */}
-      <div className="relative w-full pt-17 pb-3">
+      <div className="relative w-full pt-17 pb-17">
         {/* Centered header */}
         <h1 className="absolute left-1/2 top-2 -translate-x-1/2 text-4xl font-bold text-white">
           Katana Vault Aggregator
