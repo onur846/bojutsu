@@ -38,53 +38,49 @@ export default function Home() {
         backgroundAttachment: "fixed"
       }}
     >
-      {/* Header bar */}
-      <div className="relative w-full pt-14 pb-10 flex items-center justify-center">
-        <h1 className="text-4xl font-bold text-white text-center w-full">Katana Vault Aggregator</h1>
-        {/* Connect Wallet Button */}
-        <div className="absolute right-10 top-0">
+      {/* Header with Connect Wallet in top right */}
+      <div className="relative w-full pt-6 pb-10">
+        {/* Connect Wallet Button - Fixed to top right */}
+        <div className="absolute top-6 right-6 z-10">
           <WalletConnectButton />
-          {/* Testnet Quickstart Card just under button */}
-          <div
-            style={{
-              width: "16cm",
-              height: "1.5cm",
-              minWidth: "16cm",
-              minHeight: "1.5cm",
-              maxWidth: "16cm",
-              maxHeight: "1.5cm",
-              marginTop: "0.6cm"
-            }}
-            className="flex items-center"
-          >
-            <div className="bg-[#1c2230cc] rounded-xl shadow-lg flex flex-col justify-center border border-[#292d3e] w-full h-full p-3">
-              <div>
-                <div className="text-white font-semibold text-lg mb-0 leading-tight">🧪 Testnet Quickstart</div>
-                <div className="flex flex-wrap gap-3 text-sm mb-0 mt-0.5">
-                  <a href={KATANA_CHAIN.faucet} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Get Test ETH (Faucet)</a>
-                  <a href={KATANA_CHAIN.bridge} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">Bridge Test Assets</a>
-                  <a
-                    href="#"
-                    className="text-blue-300 hover:underline"
-                    onClick={() => {
-                      if (window.ethereum) {
-                        window.ethereum.request({
-                          method: "wallet_addEthereumChain",
-                          params: [{
-                            chainId: "0x1f971",
-                            chainName: KATANA_CHAIN.name,
-                            nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-                            rpcUrls: [KATANA_CHAIN.rpc],
-                            blockExplorerUrls: [KATANA_CHAIN.explorer],
-                          }]
-                        }).catch((err) => { });
-                      }
-                    }}
-                  >
-                    Add Katana Testnet to MetaMask
-                  </a>
-                </div>
-              </div>
+        </div>
+        
+        {/* Main Title */}
+        <div className="pt-8 flex items-center justify-center">
+          <h1 className="text-4xl font-bold text-white text-center">Katana Vault Aggregator</h1>
+        </div>
+        
+        {/* Testnet Quickstart Card - Centered below title */}
+        <div className="flex justify-center mt-8">
+          <div className="bg-[#1c2230cc] rounded-xl shadow-lg border border-[#292d3e] max-w-4xl w-full mx-4 p-4">
+            <div className="text-white font-semibold text-lg mb-2">🧪 Testnet Quickstart</div>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <a href={KATANA_CHAIN.faucet} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">
+                Get Test ETH (Faucet)
+              </a>
+              <a href={KATANA_CHAIN.bridge} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">
+                Bridge Test Assets
+              </a>
+              <a
+                href="#"
+                className="text-blue-300 hover:underline"
+                onClick={() => {
+                  if (window.ethereum) {
+                    window.ethereum.request({
+                      method: "wallet_addEthereumChain",
+                      params: [{
+                        chainId: "0x1f971",
+                        chainName: KATANA_CHAIN.name,
+                        nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                        rpcUrls: [KATANA_CHAIN.rpc],
+                        blockExplorerUrls: [KATANA_CHAIN.explorer],
+                      }]
+                    }).catch((err) => { });
+                  }
+                }}
+              >
+                Add Katana Testnet to MetaMask
+              </a>
             </div>
           </div>
         </div>
