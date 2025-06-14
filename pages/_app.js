@@ -5,11 +5,11 @@ import {
   mainnet, arbitrum, polygon, optimism, base, bsc,
   avalanche, fantom, zora, gnosis, linea, scroll, mantle
 } from 'wagmi/chains'
-import { injected, walletConnect } from 'wagmi/connectors' 
+import { injected, walletConnect } from 'wagmi/connectors'
+import WalletConnectButton from '../components/WalletConnectButton'
 
 const chains = [mainnet, arbitrum, polygon, optimism, base, bsc, avalanche, fantom, zora, gnosis, linea, scroll, mantle];
 
-// You forgot this line:
 const queryClient = new QueryClient();
 
 const wagmiConfig = createConfig({
@@ -29,7 +29,14 @@ export default function App({ Component, pageProps }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
+        {/* Fixed Top Bar */}
+        <div className="fixed top-0 left-0 w-full flex justify-end items-center p-4 bg-white z-20 shadow">
+          <WalletConnectButton />
+        </div>
+        {/* Main Content with padding */}
+        <div className="pt-20">
+          <Component {...pageProps} />
+        </div>
       </QueryClientProvider>
     </WagmiProvider>
   )
