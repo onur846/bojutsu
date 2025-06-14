@@ -16,7 +16,7 @@ import {
   scroll,
   mantle,
 } from 'wagmi/chains';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { InjectedConnector } from '@wagmi/connectors/injected';
 
 const queryClient = new QueryClient();
 
