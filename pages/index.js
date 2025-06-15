@@ -1177,14 +1177,14 @@ export default function KatanaDeFiPlatform() {
         </div>
       )}
 
-      <footer className="text-center py-6 text-gray-300">
+      <footer className="text-center py-6 text-amber-600">
         <div className="flex items-center justify-center gap-3">
           <span className="text-sm">Created by Onur</span>
           <a
             href="https://x.com/pelenko"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-300 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-800/50"
+            className="text-amber-600 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-800/50"
             title="Follow on X"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
