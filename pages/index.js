@@ -1106,7 +1106,7 @@ export default function KatanaDeFiPlatform() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
                   activeTab === tab.id
-                    ? 'bg-yellow-600 text-white'
+                    ? 'bg-amber-200 text-gray-800'
                     : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
                 }`}
               >
