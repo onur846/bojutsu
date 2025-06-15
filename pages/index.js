@@ -527,6 +527,12 @@ export default function KatanaDeFiPlatform() {
         return;
       }
 
+      // Check for invalid negative values (price can't go below -100%)
+      if (changeA <= -1 || changeB <= -1) {
+        alert('Price changes cannot be -100% or lower');
+        return;
+      }
+
       // Using correct Uniswap formula: IL = PoolValue / HoldValue - 1
       const priceRatioA = 1 + changeA;
       const priceRatioB = 1 + changeB;
@@ -542,7 +548,7 @@ export default function KatanaDeFiPlatform() {
       
       setIlCalculation(prev => ({
         ...prev,
-        result: (il * 100).toFixed(2)
+        result: (Math.abs(il) * 100).toFixed(2)
       }));
     };
 
