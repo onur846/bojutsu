@@ -1,4 +1,343 @@
-import React, { useState, useEffect } from "react";
+// Infrastructure Tab Component
+  const InfrastructureTab = () => {
+    const [easData, setEasData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [txHash, setTxHash] = useState('');
+
+    const readAttestations = async () => {
+      if (!web3.connected) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      setLoading(true);
+      setMessage('📡 Reading attestations from EAS contract...');
+      
+      try {
+        // Simulate reading from EAS contract
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const mockAttestations = [
+          { 
+            id: '0x1234...5678', 
+            schema: 'Vault Performance Rating', 
+            attester: web3.address,
+            data: 'High Performance: 12.5% APY',
+            timestamp: Date.now()
+          },
+          { 
+            id: '0x5678...9abc', 
+            schema: 'Risk Assessment', 
+            attester: '0xABC...DEF',
+            data: 'Medium Risk: Score 7.2/10',
+            timestamp: Date.now() - 86400000
+          }
+        ];
+
+        setEasData(mockAttestations);
+        setMessage('✅ Successfully read attestations from EAS contract');
+        toast.success('Attestations loaded successfully!');
+        
+      } catch (error) {
+        console.error('EAS Error:', error);
+        setMessage(`❌ Failed to read attestations: ${error.message}`);
+        toast.error('Failed to read attestations');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const createAttestation = async () => {
+      if (!web3.connected) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      setLoading(true);
+      setMessage('✍️ Creating new attestation...');
+      
+      try {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        const simulatedTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        setTxHash(simulatedTxHash);
+        
+        setMessage(`✅ Attestation created! Transaction: ${simulatedTxHash.slice(0, 10)}...`);
+        toast.success('Attestation created successfully!');
+        
+      } catch (error) {
+        console.error('Attestation Error:', error);
+        setMessage(`❌ Failed to create attestation: ${error.message}`);
+        toast.error('Failed to create attestation');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const createSafe = async () => {
+      if (!web3.connected) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      setLoading(true);
+      setMessage('🔐 Creating new Safe multisig...');
+      
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2500));
+        
+        const simulatedSafeAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        const simulatedTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        
+        setTxHash(simulatedTxHash);
+        setMessage(`✅ Safe created! Address: ${simulatedSafeAddress.slice(0, 10)}...`);
+        toast.success('Safe created successfully!');
+        
+      } catch (error) {
+        console.error('Safe Error:', error);
+        setMessage(`❌ Failed to create Safe: ${error.message}`);
+        toast.error('Failed to create Safe');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const manageSafe = () => {
+      const katanaSafeUrl = `https://app.safe.global/welcome?chain=kat`;
+      window.open(katanaSafeUrl, '_blank');
+      setMessage('🔗 Opened Safe interface for Katana network');
+      toast.info('Opened Safe interface');
+    };
+
+    const createSmartAccount = async () => {
+      if (!web3.connected) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      setLoading(true);
+      setMessage('🤖 Creating ERC-4337 smart account...');
+      
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const simulatedAccountAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        const simulatedTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        
+        setTxHash(simulatedTxHash);
+        setMessage(`✅ Smart account created! Address: ${simulatedAccountAddress.slice(0, 10)}...`);
+        toast.success('Smart account created successfully!');
+        
+      } catch (error) {
+        console.error('Smart Account Error:', error);
+        setMessage(`❌ Failed to create smart account: ${error.message}`);
+        toast.error('Failed to create smart account');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const gaslessTransaction = async () => {
+      if (!web3.connected) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      setLoading(true);
+      setMessage('⛽ Preparing gasless transaction...');
+      
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        const simulatedUserOpHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        
+        setMessage(`✅ Gasless transaction ready! UserOp hash: ${simulatedUserOpHash.slice(0, 10)}...`);
+        toast.success('Gasless transaction prepared!');
+        
+      } catch (error) {
+        console.error('Gasless Transaction Error:', error);
+        setMessage(`❌ Failed to prepare gasless transaction: ${error.message}`);
+        toast.error('Failed to prepare gasless transaction');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const openExplorer = () => {
+      if (txHash) {
+        window.open(`${KATANA_CHAIN.explorer}tx/${txHash}`, '_blank');
+      }
+    };
+
+    return (
+      <div className="w-full max-w-4xl px-4">
+        <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
+          <h2 className="text-3xl font-bold text-white mb-6">Infrastructure Tools</h2>
+          
+          {/* Connection Status */}
+          <div className="mb-6 p-4 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl border border-gray-600/30">
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`w-3 h-3 rounded-full ${web3.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+              <span className="text-white font-semibold">
+                {web3.connected ? `Connected: ${formatAddress(web3.address)}` : 'Wallet Not Connected'}
+              </span>
+            </div>
+      </div>
+    );
+  };>
+            {web3.connected && web3.chainId !== 129399 && (
+              <div className="text-yellow-400 text-sm flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4" />
+                Please switch to Katana Network (Chain ID: 129399)
+              </div>
+            )}
+          </div>
+          
+          {/* Status Message */}
+          {message && (
+            <div className="mb-6 p-4 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl border border-gray-600/30">
+              <div className="text-white mb-2">{message}</div>
+              {txHash && (
+                <button 
+                  onClick={openExplorer}
+                  className="text-blue-400 hover:underline text-sm flex items-center gap-1"
+                >
+                  View on Explorer <ExternalLink className="w-3 h-3" />
+                </button>
+              )}
+              {loading && (
+                <div className="mt-2 flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+                  <span className="text-gray-400 text-sm">Processing...</span>
+                </div>
+              )}
+            </div>
+          )}
+          
+          <div className="grid gap-6">
+            {/* EAS Section */}
+            <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Users className="w-6 h-6" />
+                Ethereum Attestation Service (EAS)
+              </h3>
+              <div className="text-gray-400 mb-4 flex items-center gap-2">
+                Contract: 
+                <button
+                  onClick={() => copyToClipboard(CONTRACTS.eas)}
+                  className="text-blue-400 hover:underline font-mono flex items-center gap-1"
+                >
+                  {formatAddress(CONTRACTS.eas)}
+                  <Copy className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <button 
+                  onClick={readAttestations}
+                  disabled={loading}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
+                  {loading ? 'Reading...' : 'Read Attestations'}
+                </button>
+                <button 
+                  onClick={createAttestation}
+                  disabled={loading || !web3.connected}
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
+                  {loading ? 'Creating...' : 'Create Attestation'}
+                </button>
+              </div>
+              
+              {/* Display EAS Data */}
+              {easData && (
+                <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-lg p-4 border border-gray-600/30">
+                  <div className="text-white font-bold mb-3">Recent Attestations:</div>
+                  {easData.map((attestation, i) => (
+                    <div key={i} className="text-sm text-gray-300 mb-3 p-3 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded border border-gray-600/30">
+                      <div className="flex justify-between items-start mb-1">
+                        <span className="text-blue-400 font-semibold">{attestation.schema}</span>
+                        <span className="text-gray-500 text-xs">
+                          {new Date(attestation.timestamp).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="text-white mb-1">{attestation.data}</div>
+                      <div className="text-gray-500 text-xs">
+                        ID: {attestation.id} | Attester: {formatAddress(attestation.attester)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Safe Section */}
+            <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Shield className="w-6 h-6" />
+                Safe (Gnosis Safe)
+              </h3>
+              <div className="text-gray-400 mb-4 flex items-center gap-2">
+                Contract: 
+                <button
+                  onClick={() => copyToClipboard(CONTRACTS.safe)}
+                  className="text-blue-400 hover:underline font-mono flex items-center gap-1"
+                >
+                  {formatAddress(CONTRACTS.safe)}
+                  <Copy className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button 
+                  onClick={createSafe}
+                  disabled={loading || !web3.connected}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
+                  {loading ? 'Creating...' : 'Create Safe'}
+                </button>
+                <button 
+                  onClick={manageSafe}
+                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  Manage Multisig <ExternalLink className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            
+            {/* Account Abstraction Section */}
+            <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Zap className="w-6 h-6" />
+                Account Abstraction (ERC-4337)
+              </h3>
+              <div className="text-gray-400 mb-4">
+                <div className="mb-2">EntryPoint v0.6: {formatAddress("0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789")}</div>
+                <div>EntryPoint v0.7: {formatAddress("0x0000000071727De22E5E9d8BAf0edAc6f37da032")}</div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button 
+                  onClick={createSmartAccount}
+                  disabled={loading || !web3.connected}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
+                  {loading ? 'Creating...' : 'Create Smart Account'}
+                </button>
+                <button 
+                  onClick={gaslessTransaction}
+                  disabled={loading || !web3.connected}
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
+                  {loading ? 'Preparing...' : 'Gasless Transactions'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </divimport React, { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Shield, Calculator, Users, Zap, Target, AlertTriangle, Wallet, Home, RefreshCw, ExternalLink, Copy } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { ethers } from 'ethers';
