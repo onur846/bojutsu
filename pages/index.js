@@ -108,20 +108,12 @@ export default function Home() {
                 <div>
                   <div className="text-lg font-bold text-white mb-1">{vault.name}</div>
                   <div className="text-sm text-gray-400 mb-2">Underlying: {vault.underlying}</div>
-                  <div className="flex gap-4 mb-2">
+                  <div className="flex gap-4 mb-4">
                     <span className="text-green-400 font-mono">APY: {vault.apy}</span>
                     <span className="text-blue-200 font-mono">TVL: {vault.tvl}</span>
                   </div>
-                  <div className="text-xs text-gray-300 break-all mb-3">
-                    <span>Vault: </span>{vault.address}
-                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <a href={vault.explorer} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-xs">Explorer</a>
-                  <button
-                    className="text-blue-400 hover:underline text-xs"
-                    onClick={() => copyToClipboard(vault.address)}
-                  >Copy</button>
+                <div className="flex gap-2">
                   <button
                     className="bg-green-700 hover:bg-green-800 text-white text-xs px-2 py-1 rounded"
                     onClick={() => setModal({ open: true, vault, type: "deposit" })}
