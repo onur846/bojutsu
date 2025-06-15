@@ -162,7 +162,7 @@ function useWeb3() {
             }]
           });
         } catch (addError) {
-          alert('Failed to add Katana Network');
+          alert('Failed to add Tatara Network (Katana Testnet)');
         }
       }
     }
@@ -264,8 +264,26 @@ export default function KatanaDeFiPlatform() {
     });
 
     const fetchPortfolioData = async () => {
-      if (!web3.connected || web3.chainId !== 129399) {
+      if (!web3.connected) {
         return;
+      }
+
+      if (web3.chainId !== 129399) {
+        try {
+          await web3.switchToKatana();
+          // Wait a moment for chain state to update
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Check again if we're on the right network after switch
+          const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+          if (parseInt(currentChainId, 16) !== 129399) {
+            // User cancelled the switch or it failed
+            return;
+          }
+        } catch (error) {
+          // User cancelled or switch failed
+          return;
+        }
       }
 
       setPortfolioData(prev => ({ ...prev, loading: true }));
@@ -337,7 +355,7 @@ export default function KatanaDeFiPlatform() {
             <h2 className="text-3xl font-bold text-white">Portfolio Overview</h2>
             <button
               onClick={fetchPortfolioData}
-              disabled={portfolioData.loading || !web3.connected || web3.chainId !== 129399}
+              disabled={portfolioData.loading || !web3.connected}
               className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
             >
               <RefreshCw className={`w-4 h-4 ${portfolioData.loading ? 'animate-spin' : ''}`} />
