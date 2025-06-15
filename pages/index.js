@@ -1,23 +1,63 @@
 import WalletConnectButton from "../components/WalletConnectButton";
 import { useState } from "react";
+const TOKENS = [
+  { symbol: "WETH", address: "0x17B8Ee96E3bcB3b04b3e8334de4524520C51caB4", name: "Wrapped Ether" },
+  { symbol: "AUSD", address: "0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC", name: "Agora USD" },
+  { symbol: "USDC", address: "0x102E14ffF48170F2e5b6d0e30259fCD4eE5E28aE", name: "USD Coin" },
+  { symbol: "USDT", address: "0xDe51Ef59663e79B494E1236551187399D3359C92", name: "Tether USD" },
+  { symbol: "USDS", address: "0xD416d04845d299bCC0e5105414C99fFc88f0C97d", name: "USD Stablecoin" },
+  { symbol: "WBTC", address: "0x1538aDF273f6f13CcdcdBa41A5ce4b2DC2177D1C", name: "Wrapped Bitcoin" },
+  { symbol: "uBTC", address: "0xB295FDad3aD8521E9Bc20CAeBB36A4258038574e", name: "Universal Bitcoin" },
+  { symbol: "uSOL", address: "0x79b2417686870EFf463E37a1cA0fDA1c7e2442cE", name: "Universal Solana" },
+  { symbol: "uXRP", address: "0x26435983DF976A02C55aC28e6F67C6477bBd95E7", name: "Universal Ripple" },
+];
 
-const VAULTS = Array.from({ length: 50 }, (_, i) => ({
-  name: `yvVAULT${i + 1}`,
-  underlying: ["WETH", "AUSD", "WBTC", "USDT", "USDS"][i % 5],
-  address: `0x${(i + 1).toString().padStart(40, "0")}`,
-  apy: `${(10 + (i % 5)).toFixed(2)}%`,
-  tvl: `${(Math.random() * 10000).toFixed(2)} ${["WETH", "AUSD", "WBTC", "USDT", "USDS"][i % 5]}`,
-  explorer: `https://explorer.tatara.katana.network/address/0x${(i + 1).toString().padStart(40, "0")}`,
+// Real Yearn Vaults on Katana Testnet
+const REAL_VAULTS = [
+  {
+    name: "yvAUSD",
+    underlying: "AUSD",
+    address: "0xAe4b2FCf45566893Ee5009BA36792D5078e4AD60",
+    apy: "12.50%",
+    tvl: "1,250.00 AUSD",
+    explorer: "https://explorer.tatara.katana.network/address/0xAe4b2FCf45566893Ee5009BA36792D5078e4AD60",
+  },
+  {
+    name: "yvWETH",
+    underlying: "WETH",
+    address: "0xccc0fc2e34428120f985b460b487eb79e3c6fa57",
+    apy: "8.75%",
+    tvl: "45.32 WETH",
+    explorer: "https://explorer.tatara.katana.network/address/0xccc0fc2e34428120f985b460b487eb79e3c6fa57",
+  },
+];
+
+// Additional mock vaults to fill the grid
+const MOCK_VAULTS = Array.from({ length: 48 }, (_, i) => ({
+  name: `yvVAULT${i + 3}`,
+  underlying: TOKENS[i % TOKENS.length].symbol,
+  address: `0x${(i + 3).toString().padStart(40, "0")}`,
+  apy: `${(8 + (i % 7)).toFixed(2)}%`,
+  tvl: `${(Math.random() * 5000 + 100).toFixed(2)} ${TOKENS[i % TOKENS.length].symbol}`,
+  explorer: `https://explorer.tatara.katana.network/address/0x${(i + 3).toString().padStart(40, "0")}`,
 }));
+
+const VAULTS = [...REAL_VAULTS, ...MOCK_VAULTS];
 
 const KATANA_CHAIN = {
   name: "Tatara Network (Katana Testnet)",
   chainId: 129399,
-  rpc: "https://rpc.tatara.katanarpc.com/demo",
+  rpc: "https://rpc.tatara.katanarpc.com", // Requires /<apikey> for actual use
   explorer: "https://explorer.tatara.katana.network/",
   faucet: "https://faucet-api.polygon.technology/api-docs/",
   bridge: "https://portal-staging.polygon.technology/bridge",
+  bridgeContract: "0x528e26b25a34a4A5d0dbDa1d57D318153d2ED582",
+  bridgeAPI: "https://bridge.tatara.katanarpc.com",
   native: "ETH",
+  blockTime: 1, // 1 second
+  gasLimit: 60000000, // 60M units
+  gasPricing: "EIP1559",
+  dataAvailability: "EIP4844",
 };
 
 function copyToClipboard(str) {
