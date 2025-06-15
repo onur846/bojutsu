@@ -70,6 +70,53 @@ function useWeb3() {
   const [chainId, setChainId] = useState(null);
   const [connecting, setConnecting] = useState(false);
 
+  // Check for existing connection on page load
+  useEffect(() => {
+    const checkConnection = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+          
+          if (accounts.length > 0) {
+            setAddress(accounts[0]);
+            setChainId(parseInt(chainId, 16));
+            setConnected(true);
+          }
+        } catch (error) {
+          console.log('No existing connection found');
+        }
+      }
+    };
+
+    checkConnection();
+
+    // Listen for account changes
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length > 0) {
+          setAddress(accounts[0]);
+          setConnected(true);
+        } else {
+          setConnected(false);
+          setAddress('');
+          setChainId(null);
+        }
+      });
+
+      window.ethereum.on('chainChanged', (chainId) => {
+        setChainId(parseInt(chainId, 16));
+      });
+    }
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeAllListeners('accountsChanged');
+        window.ethereum.removeAllListeners('chainChanged');
+      }
+    };
+  }, []);
+
   const connectWallet = async () => {
     if (typeof window === 'undefined' || !window.ethereum) {
       alert('Please install MetaMask');
