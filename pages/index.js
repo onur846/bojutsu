@@ -75,6 +75,12 @@ function useWeb3() {
     const checkConnection = async () => {
       if (typeof window !== 'undefined' && window.ethereum) {
         try {
+          // Check if user manually disconnected
+          const manuallyDisconnected = sessionStorage.getItem('walletDisconnected');
+          if (manuallyDisconnected === 'true') {
+            return; // Don't auto-connect if user manually disconnected
+          }
+
           const accounts = await window.ethereum.request({ method: 'eth_accounts' });
           const chainId = await window.ethereum.request({ method: 'eth_chainId' });
           
@@ -97,6 +103,8 @@ function useWeb3() {
         if (accounts.length > 0) {
           setAddress(accounts[0]);
           setConnected(true);
+          // Clear manual disconnect flag when user changes accounts in MetaMask
+          sessionStorage.removeItem('walletDisconnected');
         } else {
           setConnected(false);
           setAddress('');
@@ -131,6 +139,9 @@ function useWeb3() {
       setAddress(accounts[0]);
       setChainId(parseInt(chainId, 16));
       setConnected(true);
+      
+      // Clear manual disconnect flag when user connects
+      sessionStorage.removeItem('walletDisconnected');
       
       if (parseInt(chainId, 16) !== 129399) {
         await switchToKatana();
@@ -172,6 +183,8 @@ function useWeb3() {
     setConnected(false);
     setAddress('');
     setChainId(null);
+    // Set flag to prevent auto-reconnect on page refresh
+    sessionStorage.setItem('walletDisconnected', 'true');
   };
 
   return {
