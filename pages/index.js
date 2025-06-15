@@ -611,7 +611,7 @@ export default function KatanaDeFiPlatform() {
                 Estimated Impermanent Loss: 
                 <span className={`ml-2 font-bold ${
                   Math.abs(parseFloat(ilCalculation.result)) <= 1 ? 'text-green-400' :
-                  Math.abs(parseFloat(ilCalculation.result)) <= 5 ? 'text-orange-400' :
+                  Math.abs(parseFloat(ilCalculation.result)) <= 5 ? 'text-yellow-400' :
                   'text-red-400'
                 }`}>
                   {ilCalculation.result}%
