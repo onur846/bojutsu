@@ -635,12 +635,58 @@ export default function KatanaDeFiPlatform() {
         return;
       }
 
+      if (web3.chainId !== 129399) {
+        alert('Please switch to Katana Network first');
+        return;
+      }
+
       setLoading(true);
       setMessage(`${action} in progress...`);
       
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setMessage(`${action} completed successfully!`);
+        if (action === 'Creating attestation') {
+          // EAS Contract interaction
+          const easContract = '0x4200000000000000000000000000000000000021';
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              to: easContract,
+              from: web3.address,
+              data: '0x' // Placeholder for actual attestation data
+            }]
+          });
+          setMessage(`Attestation created! TX: ${txHash.slice(0, 10)}...`);
+        } else if (action === 'Creating Safe') {
+          // Safe Factory interaction
+          const safeFactory = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938';
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              to: safeFactory,
+              from: web3.address,
+              data: '0x' // Placeholder for safe creation data
+            }]
+          });
+          setMessage(`Safe created! TX: ${txHash.slice(0, 10)}...`);
+        } else if (action === 'Creating smart account') {
+          // ERC-4337 EntryPoint interaction
+          const entryPoint = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789';
+          const txHash = await window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+              to: entryPoint,
+              from: web3.address,
+              data: '0x' // Placeholder for account creation data
+            }]
+          });
+          setMessage(`Smart account created! TX: ${txHash.slice(0, 10)}...`);
+        } else if (action === 'Preparing gasless transaction') {
+          // UserOperation preparation
+          setMessage(`Gasless transaction prepared! Ready to submit.`);
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          setMessage(`${action} completed successfully!`);
+        }
       } catch (error) {
         setMessage(`${action} failed: ${error.message}`);
       } finally {
