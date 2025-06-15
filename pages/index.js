@@ -304,13 +304,13 @@ function WalletConnectButton() {
 
 // Main Component
 export default function KatanaDeFiPlatform() {
-  const [activeTab, setActiveTab] = useState('vaults');
+  const [activeTab, setActiveTab] = useState('portfolio');
   const [modal, setModal] = useState({ open: false, vault: null, type: null });
   const web3 = useWeb3();
 
   const tabs = [
-    { id: 'vaults', label: 'Vaults', icon: Home },
     { id: 'portfolio', label: 'Portfolio', icon: Wallet },
+    { id: 'vaults', label: 'Vaults', icon: Home },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'strategy', label: 'Strategy Builder', icon: Target },
     { id: 'risk', label: 'Risk Tools', icon: Shield },
@@ -578,7 +578,7 @@ export default function KatanaDeFiPlatform() {
 
       {/* Tab Navigation */}
       <div className="flex justify-center mb-6 px-4">
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-2 flex gap-2 overflow-x-auto border border-gray-600/30">
+        <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-2 flex gap-2 overflow-x-auto border border-gray-600/30">
           {tabs.map((tab) => {
             const IconComponent = tab.icon;
             return (
@@ -621,7 +621,7 @@ export default function KatanaDeFiPlatform() {
             </div>
             
             <div className="space-y-4 mb-6">
-              <div className="text-xs text-gray-300 p-3 bg-gray-700/50 rounded border border-gray-600/20">
+              <div className="text-xs text-gray-300 p-3 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded border border-gray-600/30">
                 <div className="flex justify-between items-center">
                   <span>Contract:</span>
                   <button
