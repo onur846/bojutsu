@@ -179,7 +179,29 @@ function useWeb3() {
     }
   };
 
-  const disconnect = () => {
+  const disconnect = async () => {
+    try {
+      // Try to disconnect from MetaMask (this method may not be supported by all wallets)
+      if (window.ethereum && window.ethereum.disconnect) {
+        await window.ethereum.disconnect();
+      }
+      // Alternative approach: request to disconnect permissions
+      else if (window.ethereum && window.ethereum.request) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_revokePermissions",
+            params: [{ eth_accounts: {} }]
+          });
+        } catch (revokeError) {
+          // If revokePermissions fails, just disconnect locally
+          console.log('Permission revoke not supported, disconnecting locally only');
+        }
+      }
+    } catch (error) {
+      console.log('MetaMask disconnect not supported, disconnecting locally only');
+    }
+    
+    // Always disconnect locally regardless of MetaMask support
     setConnected(false);
     setAddress('');
     setChainId(null);
