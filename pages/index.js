@@ -1100,12 +1100,6 @@ export default function KatanaDeFiPlatform() {
             </div>
           </div>
         </div>
-        
-        <div className="pt-8 flex items-center justify-center">
-          <h1 className="text-4xl font-bold text-white text-center">
-            Katana DeFi Platform
-          </h1>
-        </div>
       </div>
 
       <div className="flex justify-center mb-6 px-4">
