@@ -739,7 +739,7 @@ export default function KatanaDeFiPlatform() {
                 </button>
                 <button 
                   onClick={() => handleAction('Creating attestation')}
-                  disabled={loading || !web3.connected}
+                  disabled={loading}
                   className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
                   Create Attestation
@@ -758,7 +758,7 @@ export default function KatanaDeFiPlatform() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button 
                   onClick={() => handleAction('Creating Safe')}
-                  disabled={loading || !web3.connected}
+                  disabled={loading}
                   className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
                   Create Safe
@@ -783,14 +783,14 @@ export default function KatanaDeFiPlatform() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button 
                   onClick={() => handleAction('Creating smart account')}
-                  disabled={loading || !web3.connected}
+                  disabled={loading}
                   className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
                   Create Smart Account
                 </button>
                 <button 
                   onClick={() => handleAction('Preparing gasless transaction')}
-                  disabled={loading || !web3.connected}
+                  disabled={loading}
                   className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
                   Gasless Transactions
