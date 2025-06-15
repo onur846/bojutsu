@@ -548,7 +548,7 @@ export default function KatanaDeFiPlatform() {
       
       setIlCalculation(prev => ({
         ...prev,
-        result: (Math.abs(il) * 100).toFixed(2)
+        result: (il * 100).toFixed(2)
       }));
     };
 
