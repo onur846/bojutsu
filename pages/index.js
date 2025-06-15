@@ -220,6 +220,87 @@ function useWeb3() {
   };
 }
 
+function QuickstartDropdown() {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const web3 = useWeb3();
+
+  return (
+    <div className="relative w-full h-full">
+      <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        className="w-full h-full flex flex-col justify-center items-center hover:bg-gray-700/20 rounded-lg transition-colors group"
+        style={{ minHeight: "2.7cm" }}
+      >
+        <div className="text-white font-semibold text-lg mb-1 flex items-center gap-2">
+          ⚔️ Quickstart
+          <svg 
+            className={`w-4 h-4 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+        <div className="text-gray-400 text-xs">Click to expand</div>
+      </button>
+
+      {showDropdown && (
+        <div className="absolute top-full left-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-20 min-w-[200px]">
+          <div className="p-2">
+            <button
+              onClick={() => {
+                web3.switchToKatana();
+                setShowDropdown(false);
+              }}
+              className="w-full text-left px-3 py-2 text-blue-300 hover:bg-blue-900/20 rounded transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+              </svg>
+              Add Katana Testnet
+            </button>
+            
+            <a
+              href={KATANA_CHAIN.faucet}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setShowDropdown(false)}
+              className="w-full text-left px-3 py-2 text-blue-300 hover:bg-blue-900/20 rounded transition-colors flex items-center gap-2 block"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              Get Test ETH
+            </a>
+            
+            <a
+              href={KATANA_CHAIN.bridge}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setShowDropdown(false)}
+              className="w-full text-left px-3 py-2 text-blue-300 hover:bg-blue-900/20 rounded transition-colors flex items-center gap-2 block"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+              Bridge Assets
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Click outside to close dropdown */}
+      {showDropdown && (
+        <div 
+          className="fixed inset-0 z-10" 
+          onClick={() => setShowDropdown(false)}
+        />
+      )}
+    </div>
+  );
+}
+
 // Wallet Connect Button
 function WalletConnectButton() {
   const web3 = useWeb3();
