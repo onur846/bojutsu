@@ -537,18 +537,13 @@ export default function KatanaDeFiPlatform() {
       const priceRatioA = 1 + changeA;
       const priceRatioB = 1 + changeB;
       
-      // Pool value calculation using x*y=k formula
-      const poolValue = 2 * Math.sqrt(priceRatioA * priceRatioB);
-      
-      // Hold value calculation (50/50 initial split)
-      const holdValue = 0.5 * priceRatioA + 0.5 * priceRatioB;
-      
-      // IL = PoolValue / HoldValue - 1
-      const il = poolValue / holdValue - 1;
+      // Correct IL formula: 2*sqrt(priceA/priceB) / (1 + priceA/priceB) - 1
+      const priceRatio = priceRatioA / priceRatioB;
+      const il = (2 * Math.sqrt(priceRatio)) / (1 + priceRatio) - 1;
       
       setIlCalculation(prev => ({
         ...prev,
-        result: (il * 100).toFixed(2)
+        result: (Math.abs(il) * 100).toFixed(2)
       }));
     };
 
