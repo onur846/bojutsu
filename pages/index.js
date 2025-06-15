@@ -527,17 +527,22 @@ export default function KatanaDeFiPlatform() {
         return;
       }
 
-      // Correct IL calculation formula
+      // Using correct Uniswap formula: IL = PoolValue / HoldValue - 1
       const priceRatioA = 1 + changeA;
       const priceRatioB = 1 + changeB;
-      const k = priceRatioA / priceRatioB;
       
-      // IL = 2 * sqrt(k) / (1 + k) - 1
-      const il = (2 * Math.sqrt(k)) / (1 + k) - 1;
+      // Pool value calculation using x*y=k formula
+      const poolValue = 2 * Math.sqrt(priceRatioA * priceRatioB);
+      
+      // Hold value calculation (50/50 initial split)
+      const holdValue = 0.5 * priceRatioA + 0.5 * priceRatioB;
+      
+      // IL = PoolValue / HoldValue - 1
+      const il = poolValue / holdValue - 1;
       
       setIlCalculation(prev => ({
         ...prev,
-        result: (Math.abs(il) * 100).toFixed(2)
+        result: (il * 100).toFixed(2)
       }));
     };
 
