@@ -19,7 +19,7 @@
     "wagmi": "^2.15.6",
     "@wagmi/connectors": "^2.5.11",
     "@walletconnect/web3modal": "^4.1.0",
-    "@web3modal/wagmi": "^4.1.0"
+    "@web3modal/wagmi": "^4.1.0",
     "viem": "^2.31.2"
   },
   "devDependencies": {
