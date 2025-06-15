@@ -1102,7 +1102,7 @@ export default function KatanaDeFiPlatform() {
         </div>
       </div>
 
-      <div className="flex justify-center mb-6 px-4">
+      <div className="flex justify-center mb-6 px-4 pt-16">
         <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-2 flex gap-2 overflow-x-auto border border-gray-600/30">
           {tabs.map((tab) => {
             const IconComponent = tab.icon;
@@ -1124,7 +1124,7 @@ export default function KatanaDeFiPlatform() {
         </div>
       </div>
 
-      <div className="flex flex-1 justify-center items-start pb-12">
+      <div className="flex flex-1 justify-center items-center pb-12">
         {activeTab === 'portfolio' && <PortfolioTab />}
         {activeTab === 'vaults' && <VaultsTab />}
         {activeTab === 'analytics' && <AnalyticsTab />}
