@@ -853,17 +853,6 @@ export default function KatanaDeFiPlatform() {
     </div>
   );
 
-  // Infrastructure Tab Component
-  const InfrastructureTab = () => (
-    <div className="w-full max-w-4xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
-        <h2 className="text-3xl font-bold text-white mb-6">Infrastructure Tools</h2>
-        <div className="text-center py-8">
-          <div className="text-gray-400">Infrastructure tools coming soon</div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div
