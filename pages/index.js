@@ -48,16 +48,16 @@ export default function Home() {
           <div 
             className="mt-3 bg-[#1c2230cc] rounded-xl shadow-lg border border-[#292d3e] flex items-center justify-center p-3"
             style={{
-              width: "15cm",
-              height: "1.5cm",
-              minWidth: "15cm",
-              minHeight: "1.5cm",
-              maxWidth: "15cm",
-              maxHeight: "1.5cm"
+              width: "6.8cm",
+              height: "2.5cm",
+              minWidth: "6.8cm",
+              minHeight: "2.5cm",
+              maxWidth: "6.8cm",
+              maxHeight: "2.5cm"
             }}
           >
             <div className="w-full h-full flex flex-col justify-center">
-              <div className="text-white font-semibold text-lg mb-1 leading-tight">🧪 Testnet Quickstart</div>
+              <div className="text-white font-semibold text-lg mb-1 leading-tight">⚔️ Quickstart</div>
               <div className="flex flex-col text-sm space-y-0.5">
                 <a
                   href="#"
@@ -77,7 +77,7 @@ export default function Home() {
                     }
                   }}
                 >
-                  Add Katana Testnet to MetaMask
+                  Add Katana Testnet
                 </a>
                 <a href={KATANA_CHAIN.faucet} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:underline">
                   Get Test ETH (Faucet)
