@@ -44,7 +44,7 @@ const KATANA_CHAIN = {
 
 // Protocol Data
 const PROTOCOL_RATES = [
-  { name: "Morpho Blue", apy: "8.2%", tvl: "$2.5M", risk: 7.5, color: "bg-blue-500" },
+  { name: "Morpho", apy: "8.2%", tvl: "$2.5M", risk: 7.5, color: "bg-blue-500" },
   { name: "Yearn Vaults", apy: "10.6%", tvl: "$1.8M", risk: 6.8, color: "bg-purple-500" },
   { name: "Sushi LP", apy: "15.3%", tvl: "$3.2M", risk: 8.9, color: "bg-pink-500" },
   { name: "Vertex Perps", apy: "22.1%", tvl: "$850K", risk: 9.2, color: "bg-orange-500" }
