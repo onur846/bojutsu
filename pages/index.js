@@ -402,15 +402,30 @@ export default function KatanaDeFiPlatform() {
 
   // Vaults Tab
   const VaultsTab = () => {
-    const handleVaultAction = (vault, action) => {
+    const handleVaultAction = async (vault, action) => {
       if (!web3.connected) {
         alert('Please connect your wallet first');
         return;
       }
+      
       if (web3.chainId !== 129399) {
-        alert('Please switch to Katana Network');
-        return;
+        try {
+          await web3.switchToKatana();
+          // Wait a moment for chain state to update
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Check again if we're on the right network after switch
+          const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+          if (parseInt(currentChainId, 16) !== 129399) {
+            // User cancelled the switch or it failed
+            return;
+          }
+        } catch (error) {
+          // User cancelled or switch failed
+          return;
+        }
       }
+      
       setModal({ open: true, vault, type: action });
     };
 
@@ -810,9 +825,17 @@ export default function KatanaDeFiPlatform() {
       if (web3.chainId !== 129399) {
         try {
           await web3.switchToKatana();
-          // After switching, proceed with the action
+          // Wait a moment for chain state to update
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Check again if we're on the right network after switch
+          const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+          if (parseInt(currentChainId, 16) !== 129399) {
+            // User cancelled the switch or it failed
+            return;
+          }
         } catch (error) {
-          alert('Failed to switch network');
+          // User cancelled or switch failed
           return;
         }
       }
