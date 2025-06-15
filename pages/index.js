@@ -48,16 +48,16 @@ export default function Home() {
           <div 
             className="mt-3 bg-[#1c2230cc] rounded-xl shadow-lg border border-[#292d3e] flex items-center justify-center p-3"
             style={{
-              width: "4cm",
-              height: "2.5cm",
-              minWidth: "4cm",
-              minHeight: "2.5cm",
-              maxWidth: "4cm",
-              maxHeight: "2.5cm"
+              width: "15cm",
+              height: "1.5cm",
+              minWidth: "15cm",
+              minHeight: "1.5cm",
+              maxWidth: "15cm",
+              maxHeight: "1.5cm"
             }}
           >
             <div className="w-full h-full flex flex-col justify-center">
-              <div className="text-white font-semibold text-lg mb-1 leading-tight">⚔️ Quickstart</div>
+              <div className="text-white font-semibold text-lg mb-1 leading-tight">🧪 Testnet Quickstart</div>
               <div className="flex flex-col text-sm space-y-0.5">
                 <a
                   href="#"
@@ -97,7 +97,7 @@ export default function Home() {
       </div>
 
       {/* Vaults as Cards */}
-      <div className="flex flex-1 justify-center items-start mt-10">
+      <div className="flex flex-1 justify-center items-start" style={{ marginTop: "7cm" }}>
         <div className="w-full max-w-7xl px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {VAULTS.map((vault) => (
