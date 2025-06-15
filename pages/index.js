@@ -377,7 +377,7 @@ export default function KatanaDeFiPlatform() {
           {REAL_VAULTS.map((vault, index) => (
             <div
               key={vault.address}
-              className="bg-gradient-to-br from-green-900/20 to-green-800/10 border border-green-500/30 rounded-xl p-4 shadow-lg transition-all hover:scale-105"
+              className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm border border-gray-600/30 rounded-xl p-4 shadow-lg transition-all hover:scale-105"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -441,7 +441,7 @@ export default function KatanaDeFiPlatform() {
   // Portfolio Tab Component
   const PortfolioTab = () => (
     <div className="w-full max-w-4xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
         <h2 className="text-3xl font-bold text-white mb-4">Portfolio Overview</h2>
         <div className="text-4xl font-bold text-green-400 mb-6">$0.00</div>
         
@@ -461,11 +461,11 @@ export default function KatanaDeFiPlatform() {
   // Analytics Tab Component
   const AnalyticsTab = () => (
     <div className="w-full max-w-6xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
         <h2 className="text-3xl font-bold text-white mb-6">Protocol Comparison</h2>
         <div className="grid gap-4">
           {PROTOCOL_RATES.map((protocol, i) => (
-            <div key={i} className="bg-gray-700/30 rounded-xl p-6 border border-gray-600/20">
+            <div key={i} className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-3">
                   <div className={`w-4 h-4 rounded ${protocol.color}`}></div>
@@ -493,7 +493,7 @@ export default function KatanaDeFiPlatform() {
   // Strategy Tab Component
   const StrategyTab = () => (
     <div className="w-full max-w-4xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
         <h2 className="text-3xl font-bold text-white mb-6">Strategy Builder</h2>
         <div className="text-center py-8">
           <div className="text-gray-400">Strategy builder coming soon</div>
@@ -505,7 +505,7 @@ export default function KatanaDeFiPlatform() {
   // Risk Tab Component
   const RiskTab = () => (
     <div className="w-full max-w-4xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
         <h2 className="text-3xl font-bold text-white mb-6">Risk Management</h2>
         <div className="text-center py-8">
           <div className="text-gray-400">Risk tools coming soon</div>
@@ -517,7 +517,7 @@ export default function KatanaDeFiPlatform() {
   // Infrastructure Tab Component
   const InfrastructureTab = () => (
     <div className="w-full max-w-4xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/50 to-gray-700/30 rounded-2xl p-6 border border-gray-600/30">
+      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
         <h2 className="text-3xl font-bold text-white mb-6">Infrastructure Tools</h2>
         <div className="text-center py-8">
           <div className="text-gray-400">Infrastructure tools coming soon</div>
@@ -612,7 +612,7 @@ export default function KatanaDeFiPlatform() {
       {/* Modal */}
       {modal.open && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-gray-800 to-gray-700 rounded-2xl p-6 shadow-2xl w-full max-w-md border border-gray-600/30">
+          <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 shadow-2xl w-full max-w-md border border-gray-600/30">
             <div className="text-center mb-6">
               <h2 className="text-xl text-white font-bold mb-2">
                 {modal.type === "deposit" ? "Deposit to" : "Withdraw from"}
