@@ -1077,8 +1077,8 @@ export default function KatanaDeFiPlatform() {
           <div 
             className="mt-3 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-600/30 p-3"
             style={{
-              width: "4.8cm",
-              height: "2.5cm"
+              width: "4cm",
+              height: "2.7cm"
             }}
           >
             <div className="w-full h-full flex flex-col justify-center">
