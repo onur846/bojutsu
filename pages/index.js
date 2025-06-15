@@ -527,12 +527,17 @@ export default function KatanaDeFiPlatform() {
         return;
       }
 
-      const priceRatio = (1 + changeA) / (1 + changeB);
-      const il = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
+      // Correct IL calculation formula
+      const priceRatioA = 1 + changeA;
+      const priceRatioB = 1 + changeB;
+      const k = priceRatioA / priceRatioB;
+      
+      // IL = 2 * sqrt(k) / (1 + k) - 1
+      const il = (2 * Math.sqrt(k)) / (1 + k) - 1;
       
       setIlCalculation(prev => ({
         ...prev,
-        result: (il * 100).toFixed(2)
+        result: (Math.abs(il) * 100).toFixed(2)
       }));
     };
 
