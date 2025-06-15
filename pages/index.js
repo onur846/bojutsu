@@ -32,15 +32,29 @@ const REAL_VAULTS = [
   },
 ];
 
+// Realistic vault names based on DeFi strategies
+const VAULT_STRATEGIES = [
+  "Curve", "Convex", "Aura", "Balancer", "Compound", "Aave", "Morpho",
+  "Uniswap", "Sushi", "Vertex", "Arbitrum", "Optimism", "Base", "Polygon",
+  "Lido", "Rocket", "Frax", "Maker", "Synthetix", "Curve3Pool", "TriCrypto",
+  "StableSwap", "MetaPool", "Boosted", "Leveraged", "Delta", "Gamma", "Alpha"
+];
+
 // Additional mock vaults to fill the grid
-const MOCK_VAULTS = Array.from({ length: 48 }, (_, i) => ({
-  name: `yvVAULT${i + 3}`,
-  underlying: TOKENS[i % TOKENS.length].symbol,
-  address: `0x${(i + 3).toString().padStart(40, "0")}`,
-  apy: `${(8 + (i % 7)).toFixed(2)}%`,
-  tvl: `${(Math.random() * 5000 + 100).toFixed(2)} ${TOKENS[i % TOKENS.length].symbol}`,
-  explorer: `https://explorer.tatara.katana.network/address/0x${(i + 3).toString().padStart(40, "0")}`,
-}));
+const MOCK_VAULTS = Array.from({ length: 48 }, (_, i) => {
+  const token = TOKENS[i % TOKENS.length];
+  const strategy = VAULT_STRATEGIES[i % VAULT_STRATEGIES.length];
+  const vaultName = `yv${token.symbol}-${strategy}`;
+  
+  return {
+    name: vaultName,
+    underlying: token.symbol,
+    address: `0x${(i + 3).toString().padStart(40, "0")}`,
+    apy: `${(8 + (i % 7)).toFixed(2)}%`,
+    tvl: `${(Math.random() * 5000 + 100).toFixed(2)} ${token.symbol}`,
+    explorer: `https://explorer.tatara.katana.network/address/0x${(i + 3).toString().padStart(40, "0")}`,
+  };
+});
 
 const VAULTS = [...REAL_VAULTS, ...MOCK_VAULTS];
 
