@@ -441,7 +441,7 @@ export default function KatanaDeFiPlatform() {
           ) : (
             <div className="text-center py-8">
               <div className="text-gray-400 text-lg mb-2">No positions found</div>
-              <div className="text-gray-500 text-sm">
+              <div className="text-gray-300 text-sm">
                 {web3.connected 
                   ? web3.chainId !== 129399
                     ? "Switch to Katana Network to view your positions"
@@ -1177,14 +1177,14 @@ export default function KatanaDeFiPlatform() {
         </div>
       )}
 
-      <footer className="text-center py-6 text-gray-400">
+      <footer className="text-center py-6 text-gray-300">
         <div className="flex items-center justify-center gap-3">
           <span className="text-sm">Created by Onur</span>
           <a
             href="https://x.com/pelenko"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-400 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-800/50"
+            className="text-gray-300 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-800/50"
             title="Follow on X"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
