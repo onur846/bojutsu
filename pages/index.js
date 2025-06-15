@@ -636,7 +636,7 @@ export default function KatanaDeFiPlatform() {
       }
 
       if (web3.chainId !== 129399) {
-        alert('Please switch to Katana Network first');
+        alert('Switch to Tatara Network (Katana Testnet)');
         return;
       }
 
