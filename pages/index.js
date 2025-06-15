@@ -256,24 +256,149 @@ export default function KatanaDeFiPlatform() {
   ];
 
   // Portfolio Tab
-  const PortfolioTab = () => (
-    <div className="w-full max-w-4xl px-4">
-      <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
-        <h2 className="text-3xl font-bold text-white mb-4">Portfolio Overview</h2>
-        <div className="text-4xl font-bold text-green-400 mb-6">$0.00</div>
-        
-        <div className="text-center py-8">
-          <div className="text-gray-400 text-lg mb-2">No positions found</div>
-          <div className="text-gray-500 text-sm">
-            {web3.connected 
-              ? "Deposit into vaults to see your positions here" 
-              : "Connect your wallet to view portfolio"
+  const PortfolioTab = () => {
+    const [portfolioData, setPortfolioData] = useState({
+      totalValue: '0.00',
+      positions: [],
+      loading: false
+    });
+
+    const fetchPortfolioData = async () => {
+      if (!web3.connected || web3.chainId !== 129399) {
+        return;
+      }
+
+      setPortfolioData(prev => ({ ...prev, loading: true }));
+
+      try {
+        const positions = [];
+        let totalValue = 0;
+
+        // Fetch balances from each vault
+        for (const vault of REAL_VAULTS) {
+          try {
+            // ERC-20 balanceOf call to vault contract
+            const balanceHex = await window.ethereum.request({
+              method: 'eth_call',
+              params: [{
+                to: vault.address,
+                data: `0x70a08231000000000000000000000000${web3.address.slice(2)}` // balanceOf(address)
+              }, 'latest']
+            });
+
+            const balance = parseInt(balanceHex, 16);
+            
+            if (balance > 0) {
+              // Convert balance from wei (assuming 18 decimals)
+              const balanceFormatted = (balance / Math.pow(10, 18)).toFixed(6);
+              
+              // Simple USD value calculation (in real app, you'd use price oracles)
+              const mockPrices = { 'AUSD': 1.00, 'WETH': 2400.00 };
+              const usdValue = parseFloat(balanceFormatted) * (mockPrices[vault.underlying] || 1);
+              
+              positions.push({
+                vault: vault.name,
+                underlying: vault.underlying,
+                balance: balanceFormatted,
+                usdValue: usdValue.toFixed(2),
+                apy: vault.apy,
+                protocol: vault.protocol,
+                address: vault.address
+              });
+
+              totalValue += usdValue;
             }
+          } catch (error) {
+            console.log(`Failed to fetch balance for ${vault.name}:`, error);
+          }
+        }
+
+        setPortfolioData({
+          totalValue: totalValue.toFixed(2),
+          positions,
+          loading: false
+        });
+
+      } catch (error) {
+        console.error('Failed to fetch portfolio data:', error);
+        setPortfolioData(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    // Fetch portfolio data when wallet connects or network changes
+    useEffect(() => {
+      fetchPortfolioData();
+    }, [web3.connected, web3.chainId, web3.address]);
+
+    return (
+      <div className="w-full max-w-4xl px-4">
+        <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-3xl font-bold text-white">Portfolio Overview</h2>
+            <button
+              onClick={fetchPortfolioData}
+              disabled={portfolioData.loading || !web3.connected || web3.chainId !== 129399}
+              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+            >
+              <RefreshCw className={`w-4 h-4 ${portfolioData.loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
           </div>
+          
+          <div className="text-4xl font-bold text-green-400 mb-6">
+            ${portfolioData.loading ? '...' : portfolioData.totalValue}
+          </div>
+          
+          {portfolioData.loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-4"></div>
+              <div className="text-gray-400 text-lg">Loading portfolio...</div>
+            </div>
+          ) : portfolioData.positions.length > 0 ? (
+            <div className="space-y-4">
+              {portfolioData.positions.map((position, index) => (
+                <div key={index} className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-4 border border-gray-600/30">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="text-white font-bold text-lg">{position.vault}</h3>
+                      <div className="text-gray-400 text-sm">{position.protocol} • {position.underlying}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-green-400 font-bold text-lg">${position.usdValue}</div>
+                      <div className="text-gray-400 text-sm">{position.apy} APY</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="text-blue-200 font-mono text-sm">
+                      {position.balance} {position.underlying}
+                    </div>
+                    <button
+                      onClick={() => window.open(`https://explorer.tatara.katana.network/address/${position.address}`, '_blank')}
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="text-gray-400 text-lg mb-2">No positions found</div>
+              <div className="text-gray-500 text-sm">
+                {web3.connected 
+                  ? web3.chainId !== 129399
+                    ? "Switch to Katana Network to view your positions"
+                    : "Deposit into vaults to see your positions here" 
+                  : "Connect your wallet to view portfolio"
+                }
+              </div>
+            </div>
+          )}
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   // Vaults Tab
   const VaultsTab = () => {
@@ -683,8 +808,13 @@ export default function KatanaDeFiPlatform() {
       }
 
       if (web3.chainId !== 129399) {
-        alert('Switch to Tatara Network (Katana Testnet)');
-        return;
+        try {
+          await web3.switchToKatana();
+          // After switching, proceed with the action
+        } catch (error) {
+          alert('Failed to switch network');
+          return;
+        }
       }
 
       setLoading(true);
