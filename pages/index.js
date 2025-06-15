@@ -223,20 +223,26 @@ function useWeb3() {
 // Wallet Connect Button
 function WalletConnectButton() {
   const web3 = useWeb3();
-  const [showDisconnect, setShowDisconnect] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   return (
     <div className="flex flex-col items-end gap-2">
       {web3.connected ? (
         <div className="relative">
           <button
-            onClick={() => setShowDisconnect(!showDisconnect)}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 group"
+            onClick={() => setShowDropdown(!showDropdown)}
+            className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 group ${
+              web3.chainId === 129399 
+                ? 'bg-green-600 hover:bg-green-700 text-white' 
+                : 'bg-yellow-600 hover:bg-yellow-700 text-white'
+            }`}
           >
-            <div className="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
+            <div className={`w-2 h-2 rounded-full animate-pulse ${
+              web3.chainId === 129399 ? 'bg-green-300' : 'bg-yellow-300'
+            }`}></div>
             <span>{formatAddress(web3.address)}</span>
             <svg 
-              className={`w-4 h-4 transition-transform duration-200 ${showDisconnect ? 'rotate-180' : ''}`} 
+              className={`w-4 h-4 transition-transform duration-200 ${showDropdown ? 'rotate-180' : ''}`} 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -245,16 +251,40 @@ function WalletConnectButton() {
             </svg>
           </button>
           
-          {showDisconnect && (
-            <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-20 min-w-[200px]">
+          {showDropdown && (
+            <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-20 min-w-[280px]">
               <div className="p-2">
-                <div className="text-gray-300 text-xs px-3 py-2 border-b border-gray-600">
+                <div className="text-gray-300 text-xs px-3 py-2 border-b border-gray-600 mb-1">
                   {web3.address}
                 </div>
+                
+                {/* Network Status & Switch */}
+                <div className={`px-3 py-2 rounded mb-1 flex items-center justify-between ${
+                  web3.chainId === 129399 
+                    ? 'bg-green-900/20 text-green-400' 
+                    : 'bg-yellow-900/20 text-yellow-400'
+                }`}>
+                  <span className="text-xs">
+                    {web3.chainId === 129399 ? '✅ Katana Network' : '⚠️ Wrong Network'}
+                  </span>
+                  {web3.chainId !== 129399 && (
+                    <button
+                      onClick={() => {
+                        web3.switchToKatana();
+                        setShowDropdown(false);
+                      }}
+                      className="text-xs bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-white transition-colors whitespace-nowrap"
+                    >
+                      Switch to Tatara Network (Katana Testnet)
+                    </button>
+                  )}
+                </div>
+
+                {/* Disconnect Button */}
                 <button
                   onClick={() => {
                     web3.disconnect();
-                    setShowDisconnect(false);
+                    setShowDropdown(false);
                   }}
                   className="w-full text-left px-3 py-2 text-red-400 hover:bg-red-900/20 rounded transition-colors flex items-center gap-2"
                 >
@@ -288,28 +318,12 @@ function WalletConnectButton() {
           )}
         </button>
       )}
-
-      {web3.connected && (
-        <div className={`text-xs px-2 py-1 rounded ${
-          web3.chainId === 129399 
-            ? 'bg-green-900/20 border border-green-500/30 text-green-400' 
-            : 'bg-yellow-900/20 border border-yellow-500/30 text-yellow-400'
-        }`}>
-          {web3.chainId === 129399 ? (
-            <span>✅ Katana Network</span>
-          ) : (
-            <button onClick={web3.switchToKatana} className="hover:underline">
-              ⚠️ Switch to Katana
-            </button>
-          )}
-        </div>
-      )}
       
       {/* Click outside to close dropdown */}
-      {showDisconnect && (
+      {showDropdown && (
         <div 
           className="fixed inset-0 z-10" 
-          onClick={() => setShowDisconnect(false)}
+          onClick={() => setShowDropdown(false)}
         />
       )}
     </div>
