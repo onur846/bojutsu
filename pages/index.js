@@ -356,6 +356,8 @@ export default function KatanaDeFiPlatform() {
       sushi: 15,
       vertex: 10
     });
+    const [simulationResult, setSimulationResult] = useState(null);
+    const [isSimulating, setIsSimulating] = useState(false);
 
     const strategies = [
       { id: 'conservative', name: 'Conservative Yield', description: 'Morpho Lending + Yearn Vaults', apy: '9.5%', risk: 'Low' },
@@ -365,6 +367,38 @@ export default function KatanaDeFiPlatform() {
     ];
 
     const totalAllocation = Object.values(customAllocation).reduce((a, b) => a + b, 0);
+
+    const simulateStrategy = async () => {
+      if (totalAllocation !== 100) {
+        alert('Please ensure total allocation equals 100%');
+        return;
+      }
+      
+      setIsSimulating(true);
+      
+      // Simulate strategy calculation
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const protocolAPYs = { morpho: 8.2, yearn: 10.6, sushi: 15.3, vertex: 22.1 };
+      const protocolRisks = { morpho: 7.5, yearn: 6.8, sushi: 8.9, vertex: 9.2 };
+      
+      let expectedAPY = 0;
+      let riskScore = 0;
+      
+      Object.entries(customAllocation).forEach(([protocol, allocation]) => {
+        expectedAPY += (protocolAPYs[protocol] * allocation) / 100;
+        riskScore += (protocolRisks[protocol] * allocation) / 100;
+      });
+      
+      setSimulationResult({
+        expectedAPY: expectedAPY.toFixed(2),
+        riskScore: riskScore.toFixed(1),
+        allocation: customAllocation
+      });
+      
+      setIsSimulating(false);
+      alert('Strategy simulation completed! See results below.');
+    };
 
     return (
       <div className="w-full max-w-4xl px-4 space-y-6">
@@ -430,10 +464,18 @@ export default function KatanaDeFiPlatform() {
 
               <div className="flex gap-3">
                 <button 
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
-                  onClick={() => alert('Strategy simulation started!')}
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2"
+                  onClick={simulateStrategy}
+                  disabled={isSimulating || totalAllocation !== 100}
                 >
-                  Simulate Strategy
+                  {isSimulating ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      Simulating...
+                    </>
+                  ) : (
+                    'Simulate Strategy'
+                  )}
                 </button>
                 <button 
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
@@ -444,6 +486,25 @@ export default function KatanaDeFiPlatform() {
               </div>
             </div>
           </div>
+          
+          {simulationResult && (
+            <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
+              <h3 className="text-xl font-bold text-white mb-4">Simulation Results</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-green-900/20 rounded-lg p-4 border border-green-500/20">
+                  <div className="text-green-400 font-bold text-lg">Expected APY</div>
+                  <div className="text-2xl font-bold text-white">{simulationResult.expectedAPY}%</div>
+                </div>
+                <div className="bg-yellow-900/20 rounded-lg p-4 border border-yellow-500/20">
+                  <div className="text-yellow-400 font-bold text-lg">Risk Score</div>
+                  <div className="text-2xl font-bold text-white">{simulationResult.riskScore}/10</div>
+                </div>
+              </div>
+              <div className="mt-4 text-gray-400 text-sm">
+                Based on current allocation: Morpho {simulationResult.allocation.morpho}%, Yearn {simulationResult.allocation.yearn}%, Sushi {simulationResult.allocation.sushi}%, Vertex {simulationResult.allocation.vertex}%
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
