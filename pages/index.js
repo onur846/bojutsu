@@ -15,7 +15,7 @@ const TOKENS = [
 // Real Yearn Vaults on Katana Testnet
 const REAL_VAULTS = [
   {
-    name: "yvAUSD",
+    name: "AUSD",
     underlying: "AUSD",
     address: "0xAe4b2FCf45566893Ee5009BA36792D5078e4AD60",
     apy: "12.50%",
@@ -23,7 +23,7 @@ const REAL_VAULTS = [
     explorer: "https://explorer.tatara.katana.network/address/0xAe4b2FCf45566893Ee5009BA36792D5078e4AD60",
   },
   {
-    name: "yvWETH",
+    name: "WETH",
     underlying: "WETH",
     address: "0xccc0fc2e34428120f985b460b487eb79e3c6fa57",
     apy: "8.75%",
@@ -44,7 +44,7 @@ const VAULT_STRATEGIES = [
 const MOCK_VAULTS = Array.from({ length: 48 }, (_, i) => {
   const token = TOKENS[i % TOKENS.length];
   const strategy = VAULT_STRATEGIES[i % VAULT_STRATEGIES.length];
-  const vaultName = `yv${token.symbol}-${strategy}`;
+  const vaultName = `${token.symbol}-${strategy}`;
   
   return {
     name: vaultName,
