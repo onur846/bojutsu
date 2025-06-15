@@ -265,7 +265,7 @@ function WalletConnectButton() {
                     : 'bg-yellow-900/20 text-yellow-400'
                 }`}>
                   <span className="text-xs">
-                    {web3.chainId === 129399 ? '✅ Katana Network' : '⚠️ Wrong Network'}
+                    {web3.chainId === 129399 ? '✅ Katana Network' : '⚠️'}
                   </span>
                   {web3.chainId !== 129399 && (
                     <button
