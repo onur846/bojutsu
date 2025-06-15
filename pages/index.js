@@ -223,21 +223,49 @@ function useWeb3() {
 // Wallet Connect Button
 function WalletConnectButton() {
   const web3 = useWeb3();
+  const [showDisconnect, setShowDisconnect] = useState(false);
 
   return (
     <div className="flex flex-col items-end gap-2">
       {web3.connected ? (
-        <div className="flex flex-col items-end gap-2">
-          <div className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
-            <span className="font-semibold">{formatAddress(web3.address)}</span>
-          </div>
+        <div className="relative">
           <button
-            onClick={web3.disconnect}
-            className="text-xs text-gray-400 hover:text-white transition-colors"
+            onClick={() => setShowDisconnect(!showDisconnect)}
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 group"
           >
-            Disconnect
+            <div className="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
+            <span>{formatAddress(web3.address)}</span>
+            <svg 
+              className={`w-4 h-4 transition-transform duration-200 ${showDisconnect ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
+          
+          {showDisconnect && (
+            <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-20 min-w-[200px]">
+              <div className="p-2">
+                <div className="text-gray-300 text-xs px-3 py-2 border-b border-gray-600">
+                  {web3.address}
+                </div>
+                <button
+                  onClick={() => {
+                    web3.disconnect();
+                    setShowDisconnect(false);
+                  }}
+                  className="w-full text-left px-3 py-2 text-red-400 hover:bg-red-900/20 rounded transition-colors flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Disconnect Wallet
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <button
@@ -251,7 +279,12 @@ function WalletConnectButton() {
               Connecting...
             </>
           ) : (
-            'Connect Wallet'
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Connect Wallet
+            </>
           )}
         </button>
       )}
@@ -270,6 +303,14 @@ function WalletConnectButton() {
             </button>
           )}
         </div>
+      )}
+      
+      {/* Click outside to close dropdown */}
+      {showDisconnect && (
+        <div 
+          className="fixed inset-0 z-10" 
+          onClick={() => setShowDisconnect(false)}
+        />
       )}
     </div>
   );
