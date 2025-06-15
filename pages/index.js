@@ -1077,7 +1077,7 @@ export default function KatanaDeFiPlatform() {
           <div 
             className="mt-3 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-600/30 p-3"
             style={{
-              width: "4cm",
+              width: "3.8cm",
               height: "2.7cm"
             }}
           >
@@ -1102,7 +1102,7 @@ export default function KatanaDeFiPlatform() {
         </div>
       </div>
 
-      <div className="flex justify-center px-4" style={{ marginTop: "10cm", marginBottom: "1cm" }}>
+      <div className="flex justify-center px-4" style={{ marginTop: "9cm", marginBottom: "1cm" }}>
         <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-2 flex gap-2 overflow-x-auto border border-gray-600/30">
           {tabs.map((tab) => {
             const IconComponent = tab.icon;
