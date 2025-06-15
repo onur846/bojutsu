@@ -303,6 +303,9 @@ export default function KatanaDeFiPlatform() {
         return;
       }
 
+      // Set loading state immediately when function is called
+      setPortfolioData(prev => ({ ...prev, loading: true }));
+
       if (web3.chainId !== 129399) {
         try {
           await web3.switchToKatana();
@@ -313,15 +316,15 @@ export default function KatanaDeFiPlatform() {
           const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
           if (parseInt(currentChainId, 16) !== 129399) {
             // User cancelled the switch or it failed
+            setPortfolioData(prev => ({ ...prev, loading: false }));
             return;
           }
         } catch (error) {
           // User cancelled or switch failed
+          setPortfolioData(prev => ({ ...prev, loading: false }));
           return;
         }
       }
-
-      setPortfolioData(prev => ({ ...prev, loading: true }));
 
       try {
         const positions = [];
