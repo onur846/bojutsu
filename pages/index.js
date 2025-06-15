@@ -1,28 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart3, TrendingUp, Shield, Calculator, Users, Zap, Target, AlertTriangle, Wallet, Home, RefreshCw, ExternalLink, Copy } from 'lucide-react';
 
-// Contract ABIs
-const EAS_ABI = [
-  "function attest((bytes32,address,uint64,bool,bytes32,bytes,uint256)) external returns (bytes32)",
-  "function getAttestation(bytes32) external view returns ((bytes32,address,uint64,uint64,uint64,bytes32,address,address,bool,bytes))"
-];
-
-const YEARN_VAULT_ABI = [
-  "function deposit(uint256, address) external returns (uint256)",
-  "function withdraw(uint256, address, uint256) external returns (uint256)",
-  "function balanceOf(address) external view returns (uint256)",
-  "function totalAssets() external view returns (uint256)"
-];
-
-// Token Configuration
-const TOKENS = [
-  { symbol: "WETH", address: "0x17B8Ee96E3bcB3b04b3e8334de4524520C51caB4", name: "Wrapped Ether" },
-  { symbol: "AUSD", address: "0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC", name: "Agora USD" },
-  { symbol: "USDC", address: "0x102E14ffF48170F2e5b6d0e30259fCD4eE5E28aE", name: "USD Coin" },
-  { symbol: "USDT", address: "0xDe51Ef59663e79B494E1236551187399D3359C92", name: "Tether USD" }
-];
-
-// Real Vaults
+// Real Vaults Data
 const REAL_VAULTS = [
   {
     name: "AUSD Yield Vault",
@@ -48,14 +27,8 @@ const REAL_VAULTS = [
 
 // Contract Addresses
 const CONTRACTS = {
-  sushiRouter: "0xAC4c6e212A361c968F1725b4d055b47E63F80b75",
-  morphoBlue: "0xC263190b99ceb7e2b7409059D24CB573e3bB9021",
-  vertexClearinghouse: "0xf72BE10454B2fB514A2639da885045C89e3EB693",
-  agglayerBridge: "0x528e26b25a34a4A5d0dbDa1d57D318153d2ED582",
   eas: "0x4200000000000000000000000000000000000021",
-  safe: "0x69f4D1788e39c87893C980c06EdF4b7f686e2938",
-  yvAUSD: "0xAe4b2FCf45566893Ee5009BA36792D5078e4AD60",
-  yvWETH: "0xccc0fc2e34428120f985b460b487eb79e3c6fa57"
+  safe: "0x69f4D1788e39c87893C980c06EdF4b7f686e2938"
 };
 
 // Chain Configuration
@@ -79,8 +52,10 @@ const PROTOCOL_RATES = [
 
 // Utility Functions
 const copyToClipboard = (str) => {
-  navigator.clipboard.writeText(str);
-  console.log('Copied to clipboard:', str);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(str);
+    alert('Copied to clipboard!');
+  }
 };
 
 const formatAddress = (address) => {
@@ -88,128 +63,33 @@ const formatAddress = (address) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
-// Simulate ethers for deployment
-const ethers = {
-  BrowserProvider: class {
-    constructor(provider) {
-      this.provider = provider;
-    }
-    async getNetwork() {
-      return { chainId: 129399n };
-    }
-    async getSigner() {
-      return new ethers.JsonRpcSigner();
-    }
-  },
-  JsonRpcSigner: class {
-    async getAddress() {
-      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-      return accounts[0];
-    }
-  },
-  Contract: class {
-    constructor(address, abi, signer) {
-      this.address = address;
-      this.abi = abi;
-      this.signer = signer;
-    }
-  }
-};
-
-// Web3 Hook
+// Simple Web3 Hook
 function useWeb3() {
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
+  const [connected, setConnected] = useState(false);
   const [address, setAddress] = useState('');
   const [chainId, setChainId] = useState(null);
-  const [connected, setConnected] = useState(false);
   const [connecting, setConnecting] = useState(false);
-
-  useEffect(() => {
-    checkConnection();
-    
-    if (typeof window !== 'undefined' && window.ethereum) {
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-      window.ethereum.on('chainChanged', handleChainChanged);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        window.ethereum.removeListener('chainChanged', handleChainChanged);
-      }
-    };
-  }, []);
-
-  const checkConnection = async () => {
-    try {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-        if (accounts.length > 0) {
-          const web3Provider = new ethers.BrowserProvider(window.ethereum);
-          const network = await web3Provider.getNetwork();
-          const web3Signer = await web3Provider.getSigner();
-          
-          setProvider(web3Provider);
-          setSigner(web3Signer);
-          setAddress(accounts[0]);
-          setChainId(Number(network.chainId));
-          setConnected(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error checking connection:', error);
-    }
-  };
-
-  const handleAccountsChanged = (accounts) => {
-    if (accounts.length === 0) {
-      handleDisconnect();
-    } else {
-      setAddress(accounts[0]);
-    }
-  };
-
-  const handleChainChanged = (chainId) => {
-    const numericChainId = parseInt(chainId, 16);
-    setChainId(numericChainId);
-  };
-
-  const handleDisconnect = () => {
-    setProvider(null);
-    setSigner(null);
-    setAddress('');
-    setChainId(null);
-    setConnected(false);
-  };
 
   const connectWallet = async () => {
     if (typeof window === 'undefined' || !window.ethereum) {
-      throw new Error('No wallet found');
+      alert('Please install MetaMask');
+      return;
     }
 
     setConnecting(true);
-
     try {
-      const web3Provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const network = await web3Provider.getNetwork();
-      const web3Signer = await web3Provider.getSigner();
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
       
-      setProvider(web3Provider);
-      setSigner(web3Signer);
       setAddress(accounts[0]);
-      setChainId(Number(network.chainId));
+      setChainId(parseInt(chainId, 16));
       setConnected(true);
-
-      if (Number(network.chainId) !== 129399) {
+      
+      if (parseInt(chainId, 16) !== 129399) {
         await switchToKatana();
       }
-
-      return { provider: web3Provider, signer: web3Signer, address: accounts[0] };
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
-      throw error;
+      alert('Failed to connect wallet');
     } finally {
       setConnecting(false);
     }
@@ -235,32 +115,30 @@ function useWeb3() {
             }]
           });
         } catch (addError) {
-          console.error('Error adding network:', addError);
+          alert('Failed to add Katana Network');
         }
       }
     }
   };
 
-  const getContract = (address, abi) => {
-    if (!signer) throw new Error('Wallet not connected');
-    return new ethers.Contract(address, abi, signer);
+  const disconnect = () => {
+    setConnected(false);
+    setAddress('');
+    setChainId(null);
   };
 
   return {
-    provider,
-    signer,
+    connected,
     address,
     chainId,
-    connected,
     connecting,
     connectWallet,
     switchToKatana,
-    getContract,
-    disconnect: handleDisconnect
+    disconnect
   };
 }
 
-// Wallet Connect Button Component
+// Wallet Connect Button
 function WalletConnectButton() {
   const web3 = useWeb3();
 
@@ -330,7 +208,7 @@ export default function KatanaDeFiPlatform() {
     { id: 'infrastructure', label: 'Infrastructure', icon: Zap }
   ];
 
-  // Portfolio Tab Component
+  // Portfolio Tab
   const PortfolioTab = () => (
     <div className="w-full max-w-4xl px-4">
       <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
@@ -350,44 +228,18 @@ export default function KatanaDeFiPlatform() {
     </div>
   );
 
-  // Vaults Tab Component
+  // Vaults Tab
   const VaultsTab = () => {
-    const [refreshing, setRefreshing] = useState(false);
-
-    const refreshVaultData = async () => {
-      if (!web3.connected) {
-        alert('Please connect your wallet first');
-        return;
-      }
-      
-      setRefreshing(true);
-      
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        alert('Vault data refreshed successfully!');
-      } catch (error) {
-        alert('Failed to refresh vault data');
-      } finally {
-        setRefreshing(false);
-      }
-    };
-
     const handleVaultAction = (vault, action) => {
       if (!web3.connected) {
         alert('Please connect your wallet first');
         return;
       }
-
       if (web3.chainId !== 129399) {
         alert('Please switch to Katana Network');
         return;
       }
-
-      setModal({ 
-        open: true, 
-        vault: { ...vault, isReal: true }, 
-        type: action 
-      });
+      setModal({ open: true, vault, type: action });
     };
 
     return (
@@ -396,18 +248,10 @@ export default function KatanaDeFiPlatform() {
           <div className="text-white">
             <span className="text-green-400 font-bold">{REAL_VAULTS.length}</span> Real Vaults
           </div>
-          <button
-            onClick={refreshVaultData}
-            disabled={refreshing}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded flex items-center gap-2"
-          >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Refreshing...' : 'Refresh'}
-          </button>
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {REAL_VAULTS.map((vault, index) => (
+          {REAL_VAULTS.map((vault) => (
             <div
               key={vault.address}
               className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm border border-gray-600/30 rounded-xl p-4 shadow-lg transition-all hover:scale-105"
@@ -471,7 +315,7 @@ export default function KatanaDeFiPlatform() {
     );
   };
 
-  // Analytics Tab Component
+  // Analytics Tab
   const AnalyticsTab = () => (
     <div className="w-full max-w-6xl px-4">
       <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
@@ -503,7 +347,7 @@ export default function KatanaDeFiPlatform() {
     </div>
   );
 
-  // Strategy Tab Component
+  // Strategy Tab
   const StrategyTab = () => {
     const [selectedStrategy, setSelectedStrategy] = useState(null);
     const [customAllocation, setCustomAllocation] = useState({
@@ -514,40 +358,147 @@ export default function KatanaDeFiPlatform() {
     });
 
     const strategies = [
-      {
-        id: 'conservative',
-        name: 'Conservative Yield',
-        description: 'Morpho Lending + Yearn Vaults',
-        apy: '9.5%',
-        risk: 'Low'
-      },
-      {
-        id: 'balanced',
-        name: 'Balanced Growth',
-        description: 'LP Farming + Lending',
-        apy: '14.2%',
-        risk: 'Medium'
-      },
-      {
-        id: 'aggressive',
-        name: 'High Risk/Reward',
-        description: 'Leveraged LP + Perps',
-        apy: '28.7%',
-        risk: 'High'
-      },
-      {
-        id: 'neutral',
-        name: 'Delta Neutral',
-        description: 'Long Vault + Short Perp',
-        apy: '12.1%',
-        risk: 'Medium'
-      }
+      { id: 'conservative', name: 'Conservative Yield', description: 'Morpho Lending + Yearn Vaults', apy: '9.5%', risk: 'Low' },
+      { id: 'balanced', name: 'Balanced Growth', description: 'LP Farming + Lending', apy: '14.2%', risk: 'Medium' },
+      { id: 'aggressive', name: 'High Risk/Reward', description: 'Leveraged LP + Perps', apy: '28.7%', risk: 'High' },
+      { id: 'neutral', name: 'Delta Neutral', description: 'Long Vault + Short Perp', apy: '12.1%', risk: 'Medium' }
     ];
 
     const totalAllocation = Object.values(customAllocation).reduce((a, b) => a + b, 0);
 
     return (
       <div className="w-full max-w-4xl px-4 space-y-6">
+        <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
+          <h2 className="text-3xl font-bold text-white mb-6">Strategy Builder</h2>
+          
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-white mb-4">Pre-built Strategies</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {strategies.map((strategy) => (
+                <div
+                  key={strategy.id}
+                  className={`rounded-lg p-4 cursor-pointer transition-all hover:scale-105 border bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm border-gray-600/30 ${
+                    selectedStrategy === strategy.id ? 'ring-2 ring-blue-400' : ''
+                  }`}
+                  onClick={() => setSelectedStrategy(strategy.id)}
+                >
+                  <div className="text-white font-bold mb-1">{strategy.name}</div>
+                  <div className="text-gray-400 text-sm mb-2">{strategy.description}</div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-green-400 font-mono">~{strategy.apy} APY</span>
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      strategy.risk === 'Low' ? 'bg-green-900/30 text-green-400' :
+                      strategy.risk === 'Medium' ? 'bg-yellow-900/30 text-yellow-400' :
+                      'bg-red-900/30 text-red-400'
+                    }`}>
+                      {strategy.risk} Risk
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
+            <h3 className="text-xl font-bold text-white mb-4">Custom Strategy</h3>
+            <div className="space-y-6">
+              <div>
+                <label className="block text-white mb-3">Protocol Allocation</label>
+                <div className="space-y-4">
+                  {Object.entries(customAllocation).map(([protocol, value]) => (
+                    <div key={protocol} className="flex items-center gap-4">
+                      <div className="w-20 text-white capitalize">{protocol}:</div>
+                      <input 
+                        type="range" 
+                        min="0" 
+                        max="100" 
+                        value={value}
+                        onChange={(e) => setCustomAllocation(prev => ({
+                          ...prev,
+                          [protocol]: parseInt(e.target.value)
+                        }))}
+                        className="flex-1 accent-blue-500"
+                      />
+                      <div className="w-12 text-white text-sm">{value}%</div>
+                    </div>
+                  ))}
+                </div>
+                <div className={`mt-2 text-sm ${totalAllocation === 100 ? 'text-green-400' : 'text-yellow-400'}`}>
+                  Total: {totalAllocation}% {totalAllocation !== 100 && '(should equal 100%)'}
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button 
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
+                  onClick={() => alert('Strategy simulation started!')}
+                >
+                  Simulate Strategy
+                </button>
+                <button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                  onClick={() => alert('Strategy saved!')}
+                >
+                  Save Strategy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Risk Tab
+  const RiskTab = () => {
+    const [ilCalculation, setIlCalculation] = useState({
+      tokenAChange: '',
+      tokenBChange: '',
+      result: null
+    });
+
+    const calculateIL = () => {
+      const changeA = parseFloat(ilCalculation.tokenAChange) / 100;
+      const changeB = parseFloat(ilCalculation.tokenBChange) / 100;
+      
+      if (isNaN(changeA) || isNaN(changeB)) {
+        alert('Please enter valid percentage changes');
+        return;
+      }
+
+      const priceRatio = (1 + changeA) / (1 + changeB);
+      const il = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
+      
+      setIlCalculation(prev => ({
+        ...prev,
+        result: (il * 100).toFixed(2)
+      }));
+    };
+
+    return (
+      <div className="w-full max-w-4xl px-4 space-y-6">
+        <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
+          <h2 className="text-3xl font-bold text-white mb-6">Risk Management</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="bg-green-900/20 rounded-xl p-4 text-center border border-green-500/20">
+              <AlertTriangle className="w-8 h-8 text-green-400 mx-auto mb-2" />
+              <div className="text-green-400 font-bold">Low Risk</div>
+              <div className="text-gray-400 text-sm">Safe positions</div>
+            </div>
+            <div className="bg-yellow-900/20 rounded-xl p-4 text-center border border-yellow-500/20">
+              <AlertTriangle className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+              <div className="text-yellow-400 font-bold">Medium Risk</div>
+              <div className="text-gray-400 text-sm">Moderate exposure</div>
+            </div>
+            <div className="bg-red-900/20 rounded-xl p-4 text-center border border-red-500/20">
+              <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+              <div className="text-red-400 font-bold">High Risk</div>
+              <div className="text-gray-400 text-sm">Aggressive positions</div>
+            </div>
+          </div>
+        </div>
+        
         <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
           <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
             <Calculator className="w-6 h-6" />
@@ -561,7 +512,7 @@ export default function KatanaDeFiPlatform() {
                 placeholder="e.g., 50 for +50%"
                 value={ilCalculation.tokenAChange}
                 onChange={(e) => setIlCalculation(prev => ({...prev, tokenAChange: e.target.value}))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg"
               />
             </div>
             <div>
@@ -571,7 +522,7 @@ export default function KatanaDeFiPlatform() {
                 placeholder="e.g., -20 for -20%"
                 value={ilCalculation.tokenBChange}
                 onChange={(e) => setIlCalculation(prev => ({...prev, tokenBChange: e.target.value}))}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg"
               />
             </div>
           </div>
@@ -592,9 +543,6 @@ export default function KatanaDeFiPlatform() {
                   {ilCalculation.result}%
                 </span>
               </div>
-              <div className="text-gray-400 text-sm mt-1">
-                This is a simplified calculation. Actual IL may vary based on trading fees and other factors.
-              </div>
             </div>
           )}
         </div>
@@ -602,163 +550,27 @@ export default function KatanaDeFiPlatform() {
     );
   };
 
-  // Infrastructure Tab Component
+  // Infrastructure Tab
   const InfrastructureTab = () => {
-    const [easData, setEasData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
-    const [txHash, setTxHash] = useState('');
 
-    const readAttestations = async () => {
+    const handleAction = async (action) => {
       if (!web3.connected) {
         alert('Please connect your wallet first');
         return;
       }
 
       setLoading(true);
-      setMessage('📡 Reading attestations from EAS contract...');
+      setMessage(`${action} in progress...`);
       
       try {
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const mockAttestations = [
-          { 
-            id: '0x1234...5678', 
-            schema: 'Vault Performance Rating', 
-            attester: web3.address,
-            data: 'High Performance: 12.5% APY',
-            timestamp: Date.now()
-          },
-          { 
-            id: '0x5678...9abc', 
-            schema: 'Risk Assessment', 
-            attester: '0xABC...DEF',
-            data: 'Medium Risk: Score 7.2/10',
-            timestamp: Date.now() - 86400000
-          }
-        ];
-
-        setEasData(mockAttestations);
-        setMessage('✅ Successfully read attestations from EAS contract');
-        
+        setMessage(`${action} completed successfully!`);
       } catch (error) {
-        console.error('EAS Error:', error);
-        setMessage(`❌ Failed to read attestations: ${error.message}`);
+        setMessage(`${action} failed: ${error.message}`);
       } finally {
         setLoading(false);
-      }
-    };
-
-    const createAttestation = async () => {
-      if (!web3.connected) {
-        alert('Please connect your wallet first');
-        return;
-      }
-
-      setLoading(true);
-      setMessage('✍️ Creating new attestation...');
-      
-      try {
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        
-        const simulatedTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        setTxHash(simulatedTxHash);
-        
-        setMessage(`✅ Attestation created! Transaction: ${simulatedTxHash.slice(0, 10)}...`);
-        
-      } catch (error) {
-        console.error('Attestation Error:', error);
-        setMessage(`❌ Failed to create attestation: ${error.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const createSafe = async () => {
-      if (!web3.connected) {
-        alert('Please connect your wallet first');
-        return;
-      }
-
-      setLoading(true);
-      setMessage('🔐 Creating new Safe multisig...');
-      
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2500));
-        
-        const simulatedSafeAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        const simulatedTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        
-        setTxHash(simulatedTxHash);
-        setMessage(`✅ Safe created! Address: ${simulatedSafeAddress.slice(0, 10)}...`);
-        
-      } catch (error) {
-        console.error('Safe Error:', error);
-        setMessage(`❌ Failed to create Safe: ${error.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const manageSafe = () => {
-      const katanaSafeUrl = `https://app.safe.global/welcome?chain=kat`;
-      window.open(katanaSafeUrl, '_blank');
-      setMessage('🔗 Opened Safe interface for Katana network');
-    };
-
-    const createSmartAccount = async () => {
-      if (!web3.connected) {
-        alert('Please connect your wallet first');
-        return;
-      }
-
-      setLoading(true);
-      setMessage('🤖 Creating ERC-4337 smart account...');
-      
-      try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        const simulatedAccountAddress = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        const simulatedTxHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        
-        setTxHash(simulatedTxHash);
-        setMessage(`✅ Smart account created! Address: ${simulatedAccountAddress.slice(0, 10)}...`);
-        
-      } catch (error) {
-        console.error('Smart Account Error:', error);
-        setMessage(`❌ Failed to create smart account: ${error.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const gaslessTransaction = async () => {
-      if (!web3.connected) {
-        alert('Please connect your wallet first');
-        return;
-      }
-
-      setLoading(true);
-      setMessage('⛽ Preparing gasless transaction...');
-      
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        const simulatedUserOpHash = '0x' + Array.from({length: 64}, () => Math.floor(Math.random() * 16).toString(16)).join('');
-        
-        setMessage(`✅ Gasless transaction ready! UserOp hash: ${simulatedUserOpHash.slice(0, 10)}...`);
-        
-      } catch (error) {
-        console.error('Gasless Transaction Error:', error);
-        setMessage(`❌ Failed to prepare gasless transaction: ${error.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const openExplorer = () => {
-      if (txHash) {
-        window.open(`${KATANA_CHAIN.explorer}tx/${txHash}`, '_blank');
       }
     };
 
@@ -774,25 +586,11 @@ export default function KatanaDeFiPlatform() {
                 {web3.connected ? `Connected: ${formatAddress(web3.address)}` : 'Wallet Not Connected'}
               </span>
             </div>
-            {web3.connected && web3.chainId !== 129399 && (
-              <div className="text-yellow-400 text-sm flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4" />
-                Please switch to Katana Network (Chain ID: 129399)
-              </div>
-            )}
           </div>
           
           {message && (
             <div className="mb-6 p-4 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl border border-gray-600/30">
               <div className="text-white mb-2">{message}</div>
-              {txHash && (
-                <button 
-                  onClick={openExplorer}
-                  className="text-blue-400 hover:underline text-sm flex items-center gap-1"
-                >
-                  View on Explorer <ExternalLink className="w-3 h-3" />
-                </button>
-              )}
               {loading && (
                 <div className="mt-2 flex items-center gap-2">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
@@ -808,54 +606,25 @@ export default function KatanaDeFiPlatform() {
                 <Users className="w-6 h-6" />
                 Ethereum Attestation Service (EAS)
               </h3>
-              <div className="text-gray-400 mb-4 flex items-center gap-2">
-                Contract: 
-                <button
-                  onClick={() => copyToClipboard(CONTRACTS.eas)}
-                  className="text-blue-400 hover:underline font-mono flex items-center gap-1"
-                >
-                  {formatAddress(CONTRACTS.eas)}
-                  <Copy className="w-3 h-3" />
-                </button>
+              <div className="text-gray-400 mb-4">
+                Contract: {formatAddress(CONTRACTS.eas)}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button 
-                  onClick={readAttestations}
+                  onClick={() => handleAction('Reading attestations')}
                   disabled={loading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
-                  {loading ? 'Reading...' : 'Read Attestations'}
+                  Read Attestations
                 </button>
                 <button 
-                  onClick={createAttestation}
+                  onClick={() => handleAction('Creating attestation')}
                   disabled={loading || !web3.connected}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
-                  {loading ? 'Creating...' : 'Create Attestation'}
+                  Create Attestation
                 </button>
               </div>
-              
-              {easData && (
-                <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-lg p-4 border border-gray-600/30">
-                  <div className="text-white font-bold mb-3">Recent Attestations:</div>
-                  {easData.map((attestation, i) => (
-                    <div key={i} className="text-sm text-gray-300 mb-3 p-3 bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded border border-gray-600/30">
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="text-blue-400 font-semibold">{attestation.schema}</span>
-                        <span className="text-gray-500 text-xs">
-                          {new Date(attestation.timestamp).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="text-white mb-1">{attestation.data}</div>
-                      <div className="text-gray-500 text-xs">
-                        ID: {attestation.id} | Attester: {formatAddress(attestation.attester)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
             
             <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
@@ -863,27 +632,19 @@ export default function KatanaDeFiPlatform() {
                 <Shield className="w-6 h-6" />
                 Safe (Gnosis Safe)
               </h3>
-              <div className="text-gray-400 mb-4 flex items-center gap-2">
-                Contract: 
-                <button
-                  onClick={() => copyToClipboard(CONTRACTS.safe)}
-                  className="text-blue-400 hover:underline font-mono flex items-center gap-1"
-                >
-                  {formatAddress(CONTRACTS.safe)}
-                  <Copy className="w-3 h-3" />
-                </button>
+              <div className="text-gray-400 mb-4">
+                Contract: {formatAddress(CONTRACTS.safe)}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button 
-                  onClick={createSafe}
+                  onClick={() => handleAction('Creating Safe')}
                   disabled={loading || !web3.connected}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
-                  {loading ? 'Creating...' : 'Create Safe'}
+                  Create Safe
                 </button>
                 <button 
-                  onClick={manageSafe}
+                  onClick={() => window.open('https://app.safe.global/welcome?chain=kat', '_blank')}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   Manage Multisig <ExternalLink className="w-4 h-4" />
@@ -897,25 +658,22 @@ export default function KatanaDeFiPlatform() {
                 Account Abstraction (ERC-4337)
               </h3>
               <div className="text-gray-400 mb-4">
-                <div className="mb-2">EntryPoint v0.6: {formatAddress("0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789")}</div>
-                <div>EntryPoint v0.7: {formatAddress("0x0000000071727De22E5E9d8BAf0edAc6f37da032")}</div>
+                EntryPoint: {formatAddress("0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789")}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button 
-                  onClick={createSmartAccount}
+                  onClick={() => handleAction('Creating smart account')}
                   disabled={loading || !web3.connected}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
-                  {loading ? 'Creating...' : 'Create Smart Account'}
+                  Create Smart Account
                 </button>
                 <button 
-                  onClick={gaslessTransaction}
+                  onClick={() => handleAction('Preparing gasless transaction')}
                   disabled={loading || !web3.connected}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
                 >
-                  {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : null}
-                  {loading ? 'Preparing...' : 'Gasless Transactions'}
+                  Gasless Transactions
                 </button>
               </div>
             </div>
@@ -1040,6 +798,7 @@ export default function KatanaDeFiPlatform() {
             <div className="flex gap-3">
               <button
                 className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                onClick={() => alert(`${modal.type} transaction would be executed here`)}
               >
                 {modal.type === "deposit" ? "Deposit" : "Withdraw"}
               </button>
@@ -1061,137 +820,4 @@ export default function KatanaDeFiPlatform() {
       </footer>
     </div>
   );
-}800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
-          <h2 className="text-3xl font-bold text-white mb-6">Strategy Builder</h2>
-          
-          <div className="mb-8">
-            <h3 className="text-xl font-bold text-white mb-4">Pre-built Strategies</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {strategies.map((strategy) => (
-                <div
-                  key={strategy.id}
-                  className={`rounded-lg p-4 cursor-pointer transition-all hover:scale-105 border bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm border-gray-600/30 ${
-                    selectedStrategy === strategy.id ? 'ring-2 ring-blue-400' : ''
-                  }`}
-                  onClick={() => setSelectedStrategy(strategy.id)}
-                >
-                  <div className="text-white font-bold mb-1">{strategy.name}</div>
-                  <div className="text-gray-400 text-sm mb-2">{strategy.description}</div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-green-400 font-mono">~{strategy.apy} APY</span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      strategy.risk === 'Low' ? 'bg-green-900/30 text-green-400' :
-                      strategy.risk === 'Medium' ? 'bg-yellow-900/30 text-yellow-400' :
-                      'bg-red-900/30 text-red-400'
-                    }`}>
-                      {strategy.risk} Risk
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30">
-            <h3 className="text-xl font-bold text-white mb-4">Custom Strategy</h3>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-white mb-3">Protocol Allocation</label>
-                <div className="space-y-4">
-                  {Object.entries(customAllocation).map(([protocol, value]) => (
-                    <div key={protocol} className="flex items-center gap-4">
-                      <div className="w-20 text-white capitalize">{protocol}:</div>
-                      <input 
-                        type="range" 
-                        min="0" 
-                        max="100" 
-                        value={value}
-                        onChange={(e) => setCustomAllocation(prev => ({
-                          ...prev,
-                          [protocol]: parseInt(e.target.value)
-                        }))}
-                        className="flex-1 accent-blue-500"
-                      />
-                      <div className="w-12 text-white text-sm">{value}%</div>
-                    </div>
-                  ))}
-                </div>
-                <div className={`mt-2 text-sm ${totalAllocation === 100 ? 'text-green-400' : 'text-yellow-400'}`}>
-                  Total: {totalAllocation}% {totalAllocation !== 100 && '(should equal 100%)'}
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <button 
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors"
-                  onClick={() => alert('Strategy simulation started!')}
-                >
-                  Simulate Strategy
-                </button>
-                <button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
-                  onClick={() => alert('Strategy saved!')}
-                >
-                  Save Strategy
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Risk Tab Component
-  const RiskTab = () => {
-    const [ilCalculation, setIlCalculation] = useState({
-      tokenAChange: '',
-      tokenBChange: '',
-      result: null
-    });
-
-    const calculateIL = () => {
-      const changeA = parseFloat(ilCalculation.tokenAChange) / 100;
-      const changeB = parseFloat(ilCalculation.tokenBChange) / 100;
-      
-      if (isNaN(changeA) || isNaN(changeB)) {
-        alert('Please enter valid percentage changes');
-        return;
-      }
-
-      const priceRatio = (1 + changeA) / (1 + changeB);
-      const il = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
-      
-      setIlCalculation(prev => ({
-        ...prev,
-        result: (il * 100).toFixed(2)
-      }));
-      
-      alert('Impermanent Loss calculated!');
-    };
-
-    return (
-      <div className="w-full max-w-4xl px-4 space-y-6">
-        <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-600/30">
-          <h2 className="text-3xl font-bold text-white mb-6">Risk Management</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-green-900/20 rounded-xl p-4 text-center border border-green-500/20">
-              <AlertTriangle className="w-8 h-8 text-green-400 mx-auto mb-2" />
-              <div className="text-green-400 font-bold">Low Risk</div>
-              <div className="text-gray-400 text-sm">Safe positions</div>
-            </div>
-            <div className="bg-yellow-900/20 rounded-xl p-4 text-center border border-yellow-500/20">
-              <AlertTriangle className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
-              <div className="text-yellow-400 font-bold">Medium Risk</div>
-              <div className="text-gray-400 text-sm">Moderate exposure</div>
-            </div>
-            <div className="bg-red-900/20 rounded-xl p-4 text-center border border-red-500/20">
-              <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-              <div className="text-red-400 font-bold">High Risk</div>
-              <div className="text-gray-400 text-sm">Aggressive positions</div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-gray-
+}
